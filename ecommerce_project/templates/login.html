@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Login</h2>
+<form method="post" style="max-width: 400px; margin: 20px 0;">
+    {% csrf_token %}
+
+    <div style="margin-bottom: 15px;">
+        <label for="username" style="display: block; margin-bottom: 5px;">Username:</label>
+        <input type="text" id="username" name="username" required
+               style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+    </div>
+
+    <div style="margin-bottom: 15px;">
+        <label for="password" style="display: block; margin-bottom: 5px;">Password:</label>
+        <input type="password" id="password" name="password" required
+               style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+    </div>
+
+    <button type="submit" class="btn">Login</button>
+</form>
+
+{% if not user.is_authenticated %}
+    <p>Demo credentials:</p>
+    <p><strong>Username:</strong> admin<br>
+    <strong>Password:</strong> [the password you set]</p>
+{% endif %}
+{% endblock %}

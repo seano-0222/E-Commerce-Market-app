@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Reviews for {{ product.name }}</h1>
+
+{% if user_review %}
+    <div style="background-color: #e9ecef; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+        <h3>Your Review</h3>
+        <p><strong>Rating:</strong> {{ user_review.rating }}/5</p>
+        <p>{{ user_review.comment }}</p>
+        <p><small>Reviewed on: {{ user_review.review_date|date:"F j, Y" }}</small></p>
+    </div>
+{% else %}
+    <a href="{% url 'reviews:add_review' product.product_id %}" class="btn">Write a Review</a>
+{% endif %}
+
+<h2>All Reviews</h2>
+<div>
+    {% for review in reviews %}
+        {% if review != user_review %}
+            <div style="border: 1px solid #ddd; padding: 10px; margin: 10px 0; border-radius: 5px;">
+                <p><strong>{{ review.customer.username }}</strong> - Rating: {{ review.rating }}/5</p>
+                <p>{{ review.comment }}</p>
+                <p><small>Reviewed on: {{ review.review_date|date:"F j, Y" }}</small></p>
+            </div>
+        {% endif %}
+    {% empty %}
+        <p>No other reviews yet.</p>
+    {% endfor %}
+</div>
+
+<a href="{% url 'products:product_detail' product.product_id %}" class="btn">Back to Product</a>
+{% endblock %}
