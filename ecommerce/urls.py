@@ -7,6 +7,12 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # All accounts app URLs (includes index at /)
+    # Accounts app (Tormes) — includes index, login, register
     path('', include('accounts.urls')),
+    # Categories app (Alipin)
+    path('categories/', include('categories.urls')),
+    # Products app (Alipin)
+    path('products/', include('products.urls')),
+    # Reviews app (Alipin)
+    path('reviews/', include('reviews.urls')),
 ]
