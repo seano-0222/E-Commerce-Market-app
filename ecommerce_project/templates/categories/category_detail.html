@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{{ category.name }}</h1>
+<p>{{ category.description }}</p>
+
+<h2>Products in this Category</h2>
+<div class="product-grid">
+    {% for product in category.products.all %}
+        <div class="product-card">
+            <h3>{{ product.name }}</h3>
+            <p>{{ product.description|truncatewords:20 }}</p>
+            <p class="price">${{ product.price }}</p>
+            <p class="stock">Stock: {{ product.stock_qty }}</p>
+            <a href="{% url 'products:product_detail' product.product_id %}" class="btn">View Details</a>
+        </div>
+    {% empty %}
+        <p>No products in this category.</p>
+    {% endfor %}
+</div>
+
+<a href="{% url 'categories:category_list' %}" class="btn">Back to Categories</a>
+{% endblock %}
