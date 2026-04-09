@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Register Customer | E-Commerce Market</title>
+    <style>
+        body        { font-family: Arial, sans-serif; max-width: 600px; margin: 40px auto; padding: 0 20px; }
+        h1          { color: #333; border-bottom: 2px solid #28a745; padding-bottom: 8px; }
+        .form-group { margin-bottom: 16px; }
+        label       { display: block; font-weight: bold; margin-bottom: 4px; }
+        select      { width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
+        button      { background-color: #28a745; color: white; padding: 10px 24px; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
+        button:hover { background-color: #1e7e34; }
+        .messages   { list-style: none; padding: 0; }
+        .messages li { background: #d4edda; color: #155724; padding: 10px; border-radius: 4px; margin-bottom: 10px; }
+        .errorlist  { color: #721c24; background: #f8d7da; padding: 8px; border-radius: 4px; list-style: none; }
+        .info-box   { background: #cce5ff; color: #004085; padding: 10px; border-radius: 4px; margin-bottom: 16px; }
+        .nav-links  { margin-top: 24px; }
+        .nav-links a { margin-right: 16px; color: #28a745; }
+    </style>
+</head>
+<body>
+
+    <h1>Register Customer</h1>
+
+    
+    <div class="info-box">
+        <strong>Note:</strong> A Person can only be registered as a Customer <em>or</em> a Vendor — not both.
+        Select a Person who has not yet been assigned a role.
+        <br />
+        Don't see the person? <a href="{% url 'register_person' %}">Register them first.</a>
+    </div>
+
+    
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    
+    <form method="post" novalidate>
+        {% csrf_token %}
+
+        {% for field in form %}
+            <div class="form-group">
+                {{ field.label_tag }}
+                {{ field }}
+                
+                {% if field.errors %}
+                    <ul class="errorlist">
+                        {% for error in field.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+        {% endfor %}
+
+        
+        {% if form.non_field_errors %}
+            <ul class="errorlist">
+                {% for error in form.non_field_errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <button type="submit">Register as Customer</button>
+    </form>
+
+    
+    <div class="nav-links">
+        <a href="{% url 'register_person' %}">Register a New Person</a>
+        <a href="{% url 'register_vendor' %}">Register as Vendor instead</a>
+    </div>
+
+</body>
+</html>

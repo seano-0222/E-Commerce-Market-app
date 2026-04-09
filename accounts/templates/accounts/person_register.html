@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Register Person | E-Commerce Market</title>
+    <style>
+        body        { font-family: Arial, sans-serif; max-width: 600px; margin: 40px auto; padding: 0 20px; }
+        h1          { color: #333; border-bottom: 2px solid #007bff; padding-bottom: 8px; }
+        .form-group { margin-bottom: 16px; }
+        label       { display: block; font-weight: bold; margin-bottom: 4px; }
+        input, textarea { width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
+        button      { background-color: #007bff; color: white; padding: 10px 24px; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
+        button:hover { background-color: #0056b3; }
+        .messages   { list-style: none; padding: 0; }
+        .messages li { background: #d4edda; color: #155724; padding: 10px; border-radius: 4px; margin-bottom: 10px; }
+        .errorlist  { color: #721c24; background: #f8d7da; padding: 8px; border-radius: 4px; list-style: none; }
+        .nav-links  { margin-top: 24px; }
+        .nav-links a { margin-right: 16px; color: #007bff; }
+    </style>
+</head>
+<body>
+
+    <h1>Register Person</h1>
+    <p>Create a new person record. After registering, assign the person as a <strong>Customer</strong> or <strong>Vendor</strong> below.</p>
+
+    <!-- Display success / info messages -->
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+   
+    <form method="post" novalidate>
+        {% csrf_token %}
+
+        {% for field in form %}
+            <div class="form-group">
+                {{ field.label_tag }}
+                {{ field }}
+                
+                {% if field.errors %}
+                    <ul class="errorlist">
+                        {% for error in field.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+        {% endfor %}
+
+        
+        {% if form.non_field_errors %}
+            <ul class="errorlist">
+                {% for error in form.non_field_errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <button type="submit">Register Person</button>
+    </form>
+
+    
+    <div class="nav-links">
+        <strong>Next step:</strong>
+        <a href="{% url 'register_customer' %}">Assign as Customer</a>
+        <a href="{% url 'register_vendor' %}">Assign as Vendor</a>
+    </div>
+
+</body>
+</html>
