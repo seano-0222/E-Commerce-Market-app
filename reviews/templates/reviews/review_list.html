@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reviews — {{ product.name }}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; }
+    nav {
+      background: linear-gradient(135deg, #1e293b, #0f172a);
+      padding: 1rem 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid #334155;
+    }
+    .nav-brand { font-size: 1.25rem; font-weight: 700; color: #a78bfa; text-decoration: none; }
+    .nav-links a { color: #94a3b8; text-decoration: none; margin-left: 1.5rem; font-size: 0.9rem; }
+    .nav-links a:hover { color: #a78bfa; }
+    .container { max-width: 820px; margin: 2.5rem auto; padding: 0 1.5rem; }
+    .back { display: inline-block; margin-bottom: 1.25rem; color: #a78bfa; text-decoration: none; font-size: .9rem; }
+    .back:hover { text-decoration: underline; }
+    .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
+    h1 { font-size: 1.5rem; font-weight: 700; color: #f8fafc; }
+    .product-name { color: #a78bfa; }
+    .btn { display: inline-block; padding: .55rem 1.25rem; border-radius: 9px; font-size: .85rem; font-weight: 600; text-decoration: none; background: linear-gradient(135deg, #a78bfa, #7c3aed); color: #fff; transition: opacity .2s; }
+    .btn:hover { opacity: .88; }
+    .review-card { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem; }
+    .review-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: .6rem; }
+    .reviewer { font-weight: 600; color: #f8fafc; font-size: .95rem; }
+    .stars { color: #fbbf24; font-size: 1rem; letter-spacing: 2px; }
+    .date { font-size: .75rem; color: #64748b; margin-top: .2rem; }
+    .comment { color: #cbd5e1; font-size: .9rem; line-height: 1.6; }
+    .messages { margin-bottom: 1rem; }
+    .msg { padding: .7rem 1rem; border-radius: 9px; font-size: .875rem; margin-bottom: .5rem; }
+    .msg.error { background: #7f1d1d33; color: #f87171; border: 1px solid #7f1d1d; }
+    .msg.success { background: #14532d33; color: #4ade80; border: 1px solid #14532d; }
+    .empty { color: #64748b; text-align: center; padding: 2rem; background: #1e293b; border-radius: 12px; }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="/" class="nav-brand">MarketPlace</a>
+    <div class="nav-links">
+      <a href="{% url 'products:product_list' %}">Products</a>
+      <a href="/cart/">Cart</a>
+      <a href="/logout/">Logout</a>
+    </div>
+  </nav>
+  <div class="container">
+    <a href="{% url 'products:product_detail' product.product_id %}" class="back">← Back to {{ product.name }}</a>
+
+    {% if messages %}
+    <div class="messages">
+      {% for message in messages %}
+      <div class="msg {{ message.tags }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="page-header">
+      <h1>Reviews — <span class="product-name">{{ product.name }}</span></h1>
+      {% if not user_review %}
+        <a href="{% url 'reviews:add_review' product.product_id %}" class="btn">+ Write a Review</a>
+      {% endif %}
+    </div>
+
+    {% if reviews %}
+      {% for review in reviews %}
+      <div class="review-card">
+        <div class="review-top">
+          <span class="reviewer">{{ review.customer.person.first_name }} {{ review.customer.person.last_name }}</span>
+          <span class="stars">{% for i in "12345" %}{% if forloop.counter <= review.rating %}★{% else %}☆{% endif %}{% endfor %}</span>
+        </div>
+        <div class="date">{{ review.review_date|date:"M d, Y" }}</div>
+        <p class="comment" style="margin-top:.6rem;">{{ review.comment }}</p>
+      </div>
+      {% endfor %}
+    {% else %}
+      <div class="empty"><p>No reviews yet. Be the first to review this product!</p></div>
+    {% endif %}
+  </div>
+</body>
+</html>

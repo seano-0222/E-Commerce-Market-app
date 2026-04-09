@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% if category %}{{ category.name }} Products{% else %}All Products{% endif %}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; }
+    nav {
+      background: linear-gradient(135deg, #1e293b, #0f172a);
+      padding: 1rem 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid #334155;
+    }
+    .nav-brand { font-size: 1.25rem; font-weight: 700; color: #a78bfa; text-decoration: none; }
+    .nav-links a { color: #94a3b8; text-decoration: none; margin-left: 1.5rem; font-size: 0.9rem; transition: color .2s; }
+    .nav-links a:hover { color: #a78bfa; }
+    .container { max-width: 1100px; margin: 2.5rem auto; padding: 0 1.5rem; }
+    .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.75rem; }
+    h1 { font-size: 1.75rem; font-weight: 700; color: #f8fafc; }
+    .sub { color: #64748b; font-size: .9rem; margin-top: .25rem; }
+    .cat-link { color: #a78bfa; text-decoration: none; font-size: .9rem; }
+    .cat-link:hover { text-decoration: underline; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1.25rem; }
+    .card {
+      background: #1e293b; border-radius: 14px; padding: 1.5rem;
+      border: 1px solid #334155; text-decoration: none; color: inherit;
+      transition: transform .2s, border-color .2s;
+      display: flex; flex-direction: column; gap: .5rem;
+    }
+    .card:hover { transform: translateY(-3px); border-color: #a78bfa55; }
+    .card-category { font-size: .75rem; color: #a78bfa; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; }
+    .card-name { font-size: 1.05rem; font-weight: 600; color: #f8fafc; }
+    .card-desc { font-size: .85rem; color: #94a3b8; flex: 1; }
+    .card-footer { display: flex; align-items: center; justify-content: space-between; margin-top: .5rem; }
+    .price { font-size: 1.1rem; font-weight: 700; color: #4ade80; }
+    .stock { font-size: .8rem; color: #64748b; }
+    .stock.low { color: #f87171; }
+    .empty { background: #1e293b; border-radius: 12px; padding: 3rem; text-align: center; color: #64748b; }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="/" class="nav-brand">MarketPlace</a>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="{% url 'categories:category_list' %}">Categories</a>
+      <a href="/cart/">Cart</a>
+      <a href="/logout/">Logout</a>
+    </div>
+  </nav>
+  <div class="container">
+    <div class="page-header">
+      <div>
+        <h1>{% if category %}{{ category.name }}{% else %}All Products{% endif %}</h1>
+        {% if category and category.description %}
+          <p class="sub">{{ category.description }}</p>
+        {% endif %}
+      </div>
+      {% if category %}
+        <a href="{% url 'categories:category_list' %}" class="cat-link">← All Categories</a>
+      {% else %}
+        <a href="{% url 'categories:category_list' %}" class="cat-link">Browse Categories</a>
+      {% endif %}
+    </div>
+
+    {% if products %}
+    <div class="grid">
+      {% for product in products %}
+      <a href="{% url 'products:product_detail' product.product_id %}" class="card">
+        <span class="card-category">{{ product.category.name }}</span>
+        <span class="card-name">{{ product.name }}</span>
+        <span class="card-desc">{{ product.description|truncatechars:80 }}</span>
+        <div class="card-footer">
+          <span class="price">₱{{ product.price }}</span>
+          <span class="stock {% if product.stock_qty < 5 %}low{% endif %}">
+            {% if product.stock_qty == 0 %}Out of stock{% else %}{{ product.stock_qty }} in stock{% endif %}
+          </span>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty">
+      <p style="font-size:1.1rem; margin-bottom:.5rem;">No products found.</p>
+      <p>Check back later or browse a different category.</p>
+    </div>
+    {% endif %}
+  </div>
+</body>
+</html>
