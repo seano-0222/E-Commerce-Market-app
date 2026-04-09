@@ -149,5 +149,5 @@ Default superuser (development only):
 | `main` | Tormes | Active — all apps integrated |
 | `Alipin` | Alipin | Merged |
 | `Malubay` | Malubay | Integrated |
-| `Capendit` | Capendit | Integrated (manual extract) |
-| `Capuras` | Capuras | Integrated (manual extract) |
+| `Capendit` | Capendit | Merged |
+| `Capuras` | Capuras | Integrated |
