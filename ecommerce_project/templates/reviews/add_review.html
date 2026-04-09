@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Write a Review for {{ product.name }}</h1>
+
+<form method="post" style="max-width: 600px;">
+    {% csrf_token %}
+
+    <div style="margin-bottom: 15px;">
+        <label for="rating" style="display: block; margin-bottom: 5px;">Rating (1-5):</label>
+        <select id="rating" name="rating" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+            <option value="">Select rating</option>
+            <option value="5">5 - Excellent</option>
+            <option value="4">4 - Very Good</option>
+            <option value="3">3 - Good</option>
+            <option value="2">2 - Fair</option>
+            <option value="1">1 - Poor</option>
+        </select>
+    </div>
+
+    <div style="margin-bottom: 15px;">
+        <label for="comment" style="display: block; margin-bottom: 5px;">Comment:</label>
+        <textarea id="comment" name="comment" rows="5" required
+                  style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;"></textarea>
+    </div>
+
+    <button type="submit" class="btn">Submit Review</button>
+    <a href="{% url 'reviews:product_reviews' product.product_id %}" class="btn btn-danger">Cancel</a>
+</form>
+{% endblock %}

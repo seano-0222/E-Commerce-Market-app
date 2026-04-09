@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Categories</h1>
+
+<div class="product-grid">
+    {% for category in categories %}
+        <div class="product-card">
+            <h3>{{ category.name }}</h3>
+            <p>{{ category.description|default:"No description" }}</p>
+            <p><strong>Products:</strong> {{ category.products.count }}</p>
+            <a href="{% url 'categories:category_detail' category.category_id %}" class="btn">View Category</a>
+            <a href="{% url 'products:products_by_category' category.category_id %}" class="btn">View Products</a>
+        </div>
+    {% empty %}
+        <p>No categories available. Please add categories through admin panel.</p>
+    {% endfor %}
+</div>
+
+<div style="margin-top: 20px;">
+    <a href="{% url 'admin:index' %}" class="btn">Add Category in Admin</a>
+</div>
+{% endblock %}

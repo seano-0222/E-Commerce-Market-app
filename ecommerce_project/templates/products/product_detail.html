@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{{ product.name }}</h1>
+
+<div style="margin: 20px 0;">
+    <p><strong>Category:</strong> <a href="{% url 'categories:category_detail' product.category.category_id %}">{{ product.category.name }}</a></p>
+    <p><strong>Description:</strong> {{ product.description }}</p>
+    <p><strong>Price:</strong> <span class="price">${{ product.price }}</span></p>
+    <p><strong>Stock Quantity:</strong> {{ product.stock_qty }}</p>
+</div>
+
+<div style="margin: 20px 0;">
+    <a href="{% url 'products:product_list' %}" class="btn">Back to Products</a>
+    <a href="{% url 'reviews:product_reviews' product.product_id %}" class="btn">View Reviews</a>
+    <a href="{% url 'reviews:add_review' product.product_id %}" class="btn">Write a Review</a>
+</div>
+
+<h2>Reviews</h2>
+<div>
+    {% for review in product.reviews.all %}
+        <div style="border: 1px solid #ddd; padding: 10px; margin: 10px 0; border-radius: 5px;">
+            <p><strong>{{ review.customer.username }}</strong> - Rating: {{ review.rating }}/5</p>
+            <p>{{ review.comment }}</p>
+            <p><small>Reviewed on: {{ review.review_date|date:"F j, Y" }}</small></p>
+        </div>
+    {% empty %}
+        <p>No reviews yet. Be the first to review this product!</p>
+    {% endfor %}
+</div>
+{% endblock %}
