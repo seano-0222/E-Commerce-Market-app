@@ -135,6 +135,14 @@
             border-radius: 20px;
             margin-top: 4px;
         }
+        .card-link {
+            margin-top: 10px;
+            font-size: .8rem;
+            font-weight: 600;
+            color: #64748b;
+            transition: color .2s;
+        }
+        .card:hover .card-link { color: #a78bfa; }
 
         /* accent colours per card */
         .accent-blue   { border-top-color: #3b82f6; }
@@ -248,32 +256,36 @@
     
     <div class="section" style="background:#fff;border-radius:16px;padding:40px;margin-bottom:24px;max-width:1100px;margin:0 auto 40px;">
         <p class="section-title">&#128230; Other App Modules</p>
-        <p class="section-sub">Modules developed by other team members. Inventory coming soon.</p>
+        <p class="section-sub">All modules are now active and integrated.</p>
         <div class="cards">
             <a href="/products/" class="card accent-purple">
                 <span class="card-icon">&#128218;</span>
                 <span class="card-title">Categories &amp; Products</span>
                 <span class="card-desc">Browse and manage product listings and categories.</span>
                 <span class="card-badge badge-purple">Alipin</span>
+                <span class="card-link">Click here &rarr;</span>
             </a>
             <a href="/cart/" class="card accent-teal">
                 <span class="card-icon">&#128722;</span>
                 <span class="card-title">Cart &amp; CartItems</span>
                 <span class="card-desc">Shopping cart management for customers.</span>
                 <span class="card-badge badge-teal">Malubay</span>
+                <span class="card-link">Click here &rarr;</span>
             </a>
             <a href="/orders/" class="card accent-red">
                 <span class="card-icon">&#128179;</span>
                 <span class="card-title">Orders, Payment &amp; Shipment</span>
                 <span class="card-desc">Order lifecycle, payments and shipping tracking.</span>
                 <span class="card-badge badge-red">Capendit</span>
+                <span class="card-link">Click here &rarr;</span>
             </a>
-            <div class="card accent-blue">
+            <a href="/inventory/" class="card accent-blue">
                 <span class="card-icon">&#127981;</span>
                 <span class="card-title">Inventory &amp; Warehouse</span>
                 <span class="card-desc">Stock levels and warehouse management.</span>
                 <span class="card-badge badge-blue">Capuras</span>
-            </div>
+                <span class="card-link">Click here &rarr;</span>
+            </a>
         </div>
     </div>
 

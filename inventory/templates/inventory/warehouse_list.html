@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Warehouses</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; }
+    nav {
+      background: linear-gradient(135deg, #1e293b, #0f172a);
+      padding: 1rem 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid #334155;
+    }
+    .nav-brand { font-size: 1.25rem; font-weight: 700; color: #a78bfa; text-decoration: none; }
+    .nav-links a { color: #94a3b8; text-decoration: none; margin-left: 1.5rem; font-size: 0.9rem; transition: color .2s; }
+    .nav-links a:hover { color: #a78bfa; }
+    .container { max-width: 1100px; margin: 2.5rem auto; padding: 0 1.5rem; }
+    h1 { font-size: 1.75rem; font-weight: 700; color: #f8fafc; margin-bottom: 1.75rem; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.25rem; }
+    .card {
+      background: #1e293b; border-radius: 14px; padding: 1.5rem;
+      border: 1px solid #334155; text-decoration: none; color: inherit;
+      transition: transform .2s, border-color .2s; display: flex; flex-direction: column; gap: .5rem;
+    }
+    .card:hover { transform: translateY(-3px); border-color: #3b82f655; }
+    .card-name { font-size: 1.1rem; font-weight: 600; color: #f8fafc; }
+    .card-loc { font-size: .85rem; color: #94a3b8; }
+    .card-footer { display: flex; align-items: center; justify-content: space-between; margin-top: .5rem; font-size: .82rem; }
+    .capacity { color: #64748b; }
+    .count { color: #3b82f6; font-weight: 600; }
+    .empty { background: #1e293b; border-radius: 12px; padding: 3rem; text-align: center; color: #64748b; }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="/" class="nav-brand">MarketPlace</a>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="{% url 'inventory_list' %}">Inventory</a>
+      <a href="/products/">Products</a>
+      <a href="/logout/">Logout</a>
+    </div>
+  </nav>
+  <div class="container">
+    <h1>Warehouses</h1>
+    {% if warehouses %}
+    <div class="grid">
+      {% for w in warehouses %}
+      <a href="{% url 'warehouse_detail' w.pk %}" class="card">
+        <span class="card-name">{{ w.name }}</span>
+        <span class="card-loc">📍 {{ w.location }}</span>
+        <div class="card-footer">
+          <span class="capacity">Capacity: {{ w.capacity }}</span>
+          <span class="count">{{ w.inventory_items.count }} product{{ w.inventory_items.count|pluralize }}</span>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty">
+      <p style="font-size:1.1rem; margin-bottom:.5rem;">No warehouses yet.</p>
+      <p>Add warehouses via the admin panel.</p>
+    </div>
+    {% endif %}
+  </div>
+</body>
+</html>
