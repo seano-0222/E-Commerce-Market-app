@@ -1,81 +1,117 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Register Customer | E-Commerce Market</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <style>
-        body        { font-family: Arial, sans-serif; max-width: 600px; margin: 40px auto; padding: 0 20px; }
-        h1          { color: #333; border-bottom: 2px solid #28a745; padding-bottom: 8px; }
-        .form-group { margin-bottom: 16px; }
-        label       { display: block; font-weight: bold; margin-bottom: 4px; }
-        select      { width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
-        button      { background-color: #28a745; color: white; padding: 10px 24px; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
-        button:hover { background-color: #1e7e34; }
-        .messages   { list-style: none; padding: 0; }
-        .messages li { background: #d4edda; color: #155724; padding: 10px; border-radius: 4px; margin-bottom: 10px; }
-        .errorlist  { color: #721c24; background: #f8d7da; padding: 8px; border-radius: 4px; list-style: none; }
-        .info-box   { background: #cce5ff; color: #004085; padding: 10px; border-radius: 4px; margin-bottom: 16px; }
-        .nav-links  { margin-top: 24px; }
-        .nav-links a { margin-right: 16px; color: #28a745; }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #e6f9ee 0%, #f3f4f6 100%);
+            min-height: 100vh;
+            display: flex; flex-direction: column; align-items: center;
+            padding: 40px 16px;
+        }
+        .navbar {
+            width: 100%; max-width: 680px;
+            display: flex; justify-content: space-between; align-items: center;
+            background: #1a1a2e; border-radius: 12px;
+            padding: 14px 24px; margin-bottom: 32px;
+        }
+        .navbar .brand { color: #fff; font-size: 1rem; font-weight: 700; text-decoration: none; }
+        .navbar .nav-links { display: flex; gap: 8px; }
+        .navbar .nav-links a {
+            color: #a0aec0; text-decoration: none; font-size: .82rem; font-weight: 500;
+            padding: 6px 14px; border-radius: 6px; transition: background .2s, color .2s;
+        }
+        .navbar .nav-links a:hover, .navbar .nav-links a.active { background: #28a745; color: #fff; }
+        .card {
+            width: 100%; max-width: 680px; background: #fff;
+            border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,.09); overflow: hidden;
+        }
+        .card-header { background: linear-gradient(90deg,#28a745,#1e7e34); padding: 28px 32px; color: #fff; }
+        .card-header h1 { font-size: 1.6rem; font-weight: 700; margin-bottom: 4px; }
+        .card-header p  { font-size: .9rem; opacity: .88; }
+        .card-body { padding: 32px; }
+        .alert {
+            display: flex; align-items: flex-start; gap: 10px;
+            padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-size: .9rem;
+        }
+        .alert-success { background: #d1fae5; color: #065f46; border-left: 4px solid #10b981; }
+        .alert-error   { background: #fee2e2; color: #991b1b; border-left: 4px solid #ef4444; }
+        .alert-info    { background: #dbeafe; color: #1e40af; border-left: 4px solid #3b82f6; }
+        .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 20px; }
+        label { font-size: .82rem; font-weight: 600; color: #374151; letter-spacing: .3px; text-transform: uppercase; }
+        select {
+            width: 100%; padding: 10px 14px;
+            border: 1.5px solid #d1d5db; border-radius: 8px;
+            font-size: .95rem; font-family: inherit; color: #111827;
+            background: #f9fafb; transition: border-color .2s, box-shadow .2s; outline: none;
+        }
+        select:focus { border-color: #28a745; box-shadow: 0 0 0 3px rgba(40,167,69,.15); background: #fff; }
+        .field-error { font-size: .8rem; color: #dc2626; margin-top: 2px; }
+        .btn-primary {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: linear-gradient(90deg,#28a745,#1e7e34); color: #fff;
+            font-size: .95rem; font-weight: 600; padding: 12px 28px;
+            border: none; border-radius: 8px; cursor: pointer; margin-top: 8px;
+            transition: opacity .2s, transform .1s;
+        }
+        .btn-primary:hover  { opacity: .92; transform: translateY(-1px); }
+        .btn-primary:active { transform: translateY(0); }
     </style>
 </head>
 <body>
 
-    <h1>Register Customer</h1>
+    <nav class="navbar">
+        <span class="brand">&#128722; E-Commerce Market</span>
+        <div class="nav-links">
+            <a href="{% url 'register_person' %}">Person</a>
+            <a href="{% url 'register_customer' %}" class="active">Customer</a>
+            <a href="{% url 'register_vendor' %}">Vendor</a>
+        </div>
+    </nav>
 
-    
-    <div class="info-box">
-        <strong>Note:</strong> A Person can only be registered as a Customer <em>or</em> a Vendor — not both.
-        Select a Person who has not yet been assigned a role.
-        <br />
-        Don't see the person? <a href="{% url 'register_person' %}">Register them first.</a>
-    </div>
+    <div class="card">
+        <div class="card-header">
+            <h1>Register Customer</h1>
+            <p>Assign an existing Person as a Customer. A person can only hold one role.</p>
+        </div>
+        <div class="card-body">
 
-    
-    {% if messages %}
-        <ul class="messages">
-            {% for message in messages %}
-                <li>{{ message }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-
-    
-    <form method="post" novalidate>
-        {% csrf_token %}
-
-        {% for field in form %}
-            <div class="form-group">
-                {{ field.label_tag }}
-                {{ field }}
-                
-                {% if field.errors %}
-                    <ul class="errorlist">
-                        {% for error in field.errors %}
-                            <li>{{ error }}</li>
-                        {% endfor %}
-                    </ul>
-                {% endif %}
+            <div class="alert alert-info">
+                &#8505;&nbsp; A Person can only be a Customer <strong>or</strong> a Vendor &mdash; not both.
+                Don't see the person? <a href="{% url 'register_person' %}" style="color:#1e40af;font-weight:600;">Register them first.</a>
             </div>
-        {% endfor %}
 
-        
-        {% if form.non_field_errors %}
-            <ul class="errorlist">
-                {% for error in form.non_field_errors %}
-                    <li>{{ error }}</li>
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-success">&#10003; {{ message }}</div>
                 {% endfor %}
-            </ul>
-        {% endif %}
+            {% endif %}
 
-        <button type="submit">Register as Customer</button>
-    </form>
+            {% if form.non_field_errors %}
+                {% for error in form.non_field_errors %}
+                    <div class="alert alert-error">&#9888; {{ error }}</div>
+                {% endfor %}
+            {% endif %}
 
-    
-    <div class="nav-links">
-        <a href="{% url 'register_person' %}">Register a New Person</a>
-        <a href="{% url 'register_vendor' %}">Register as Vendor instead</a>
+            <form method="post" novalidate>
+                {% csrf_token %}
+
+                <div class="form-group">
+                    {{ form.person.label_tag }}
+                    {{ form.person }}
+                    {% for error in form.person.errors %}<span class="field-error">{{ error }}</span>{% endfor %}
+                </div>
+
+                <button type="submit" class="btn-primary">&#10003; Register as Customer</button>
+            </form>
+
+        </div>
     </div>
 
 </body>
