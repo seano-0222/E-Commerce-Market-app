@@ -15,4 +15,6 @@ urlpatterns = [
     path('products/', include('products.urls')),
     # Reviews app (Alipin)
     path('reviews/', include('reviews.urls')),
+    # Cart app (Malubay)
+    path('cart/', include('cart.urls')),
 ]

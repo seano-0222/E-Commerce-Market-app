@@ -1,0 +1,158 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shopping Cart | E-Commerce Market</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f3f4f6;
+            min-height: 100vh;
+        }
+        .navbar {
+            background: #1a1a2e; padding: 14px 40px;
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 2px 12px rgba(0,0,0,.25);
+        }
+        .navbar .brand { color: #fff; font-size: 1.1rem; font-weight: 800; text-decoration: none; }
+        .navbar .brand span { color: #4f8ef7; }
+        .navbar a.back { color: #a0aec0; font-size: .85rem; text-decoration: none; padding: 7px 16px; border-radius: 7px; border: 1px solid #374151; transition: background .2s; }
+        .navbar a.back:hover { background: #374151; color: #fff; }
+
+        .page { max-width: 900px; margin: 40px auto; padding: 0 20px; }
+        h1 { font-size: 1.6rem; font-weight: 700; color: #111827; margin-bottom: 4px; }
+        .subtitle { color: #6b7280; font-size: .9rem; margin-bottom: 28px; }
+
+        .alert { padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-size: .9rem; border-left: 4px solid; }
+        .alert-success { background: #d1fae5; color: #065f46; border-color: #10b981; }
+        .alert-error   { background: #fee2e2; color: #991b1b; border-color: #ef4444; }
+
+        /* Cart table */
+        .cart-table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 14px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,.07); }
+        .cart-table th { background: #1a1a2e; color: #fff; padding: 14px 18px; text-align: left; font-size: .82rem; text-transform: uppercase; letter-spacing: .4px; }
+        .cart-table td { padding: 14px 18px; border-bottom: 1px solid #f3f4f6; font-size: .92rem; color: #374151; vertical-align: middle; }
+        .cart-table tr:last-child td { border-bottom: none; }
+        .cart-table tr:hover td { background: #f9fafb; }
+        .product-name { font-weight: 600; color: #111827; }
+        .price        { color: #6b7280; }
+        .subtotal     { font-weight: 700; color: #111827; }
+
+        .btn-remove {
+            background: #fee2e2; color: #991b1b; border: none;
+            padding: 6px 14px; border-radius: 6px; font-size: .8rem;
+            font-weight: 600; cursor: pointer; text-decoration: none;
+            transition: background .2s;
+        }
+        .btn-remove:hover { background: #fca5a5; }
+
+        /* Summary box */
+        .summary {
+            background: #fff; border-radius: 14px;
+            padding: 24px 28px; margin-top: 20px;
+            box-shadow: 0 2px 12px rgba(0,0,0,.07);
+            display: flex; justify-content: space-between; align-items: center;
+            flex-wrap: wrap; gap: 16px;
+        }
+        .summary .total-label { font-size: .9rem; color: #6b7280; }
+        .summary .total-value { font-size: 1.5rem; font-weight: 800; color: #111827; }
+        .summary-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+        .btn-primary {
+            background: linear-gradient(90deg,#4f8ef7,#1d4ed8); color: #fff;
+            padding: 11px 26px; border-radius: 9px; font-weight: 700;
+            font-size: .9rem; text-decoration: none; border: none; cursor: pointer;
+            transition: opacity .2s;
+        }
+        .btn-primary:hover { opacity: .88; }
+        .btn-danger {
+            background: #ef4444; color: #fff;
+            padding: 11px 26px; border-radius: 9px; font-weight: 700;
+            font-size: .9rem; text-decoration: none; border: none; cursor: pointer;
+            transition: opacity .2s;
+        }
+        .btn-danger:hover { opacity: .88; }
+
+        .empty-state {
+            text-align: center; padding: 60px 20px;
+            background: #fff; border-radius: 14px;
+            box-shadow: 0 2px 12px rgba(0,0,0,.07);
+        }
+        .empty-state .icon { font-size: 3.5rem; margin-bottom: 12px; }
+        .empty-state h2 { font-size: 1.2rem; color: #374151; margin-bottom: 8px; }
+        .empty-state p  { color: #9ca3af; font-size: .9rem; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="{% url 'index' %}" class="brand">&#128722; E-Commerce <span>Market</span></a>
+        <a href="{% url 'index' %}" class="back">&#8592; Back to Home</a>
+    </nav>
+
+    <div class="page">
+        <h1>&#128722; Shopping Cart</h1>
+        <p class="subtitle">Assigned to: <strong>Malubay</strong></p>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert {% if 'error' in message.tags %}alert-error{% else %}alert-success{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {% if cart and items %}
+            <table class="cart-table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Unit Price</th>
+                        <th>Quantity</th>
+                        <th>Subtotal</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in items %}
+                    <tr>
+                        <td><span class="product-name">{{ item.product.name }}</span></td>
+                        <td class="price">${{ item.product.price }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td class="subtotal">${{ item.get_subtotal }}</td>
+                        <td>
+                            <a href="{% url 'remove_from_cart' item.cart_item_id %}" class="btn-remove">
+                                &#10005; Remove
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <div class="summary">
+                <div>
+                    <div class="total-label">Cart Total ({{ cart.get_item_count }} items)</div>
+                    <div class="total-value">${{ cart.get_total }}</div>
+                </div>
+                <div class="summary-actions">
+                    <a href="{% url 'clear_cart' %}" class="btn-danger">&#128465; Clear Cart</a>
+                    <a href="{% url 'index' %}"      class="btn-primary">&#10003; Checkout (coming soon)</a>
+                </div>
+            </div>
+
+        {% else %}
+            <div class="empty-state">
+                <div class="icon">&#128722;</div>
+                <h2>Your cart is empty</h2>
+                <p>Browse products and add items to your cart.</p>
+                <a href="{% url 'index' %}" class="btn-primary">Browse Products</a>
+            </div>
+        {% endif %}
+    </div>
+
+</body>
+</html>
