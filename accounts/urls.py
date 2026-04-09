@@ -15,6 +15,13 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
+    # Index / home page
+    path('',                   views.index,             name='index'),
+
+    # Authentication
+    path('login/',             views.login_view,        name='login'),
+    path('logout/',            views.logout_view,       name='logout'),
+
     # Step 1 — create the base Person identity record
     path('register/person/',   views.register_person,   name='register_person'),
 

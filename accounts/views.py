@@ -13,8 +13,56 @@ Each view follows the standard Django POST/GET pattern:
 
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.forms import AuthenticationForm
 
 from .forms import PersonForm, CustomerForm, VendorForm
+
+
+# ---------------------------------------------------------------------------
+# View: index
+# ---------------------------------------------------------------------------
+
+def index(request):
+    """
+    Main landing page of the E-Commerce Market project.
+    Provides navigation to all app sections.
+    """
+    return render(request, 'accounts/index.html')
+
+
+# ---------------------------------------------------------------------------
+# View: login_view
+# ---------------------------------------------------------------------------
+
+def login_view(request):
+    """
+    Login page. Authenticates a user using Django's built-in auth system.
+    On success, redirects to the index page.
+    """
+    if request.user.is_authenticated:
+        return redirect('index')
+
+    if request.method == 'POST':
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            return redirect('index')
+    else:
+        form = AuthenticationForm()
+
+    return render(request, 'accounts/login.html', {'form': form})
+
+
+# ---------------------------------------------------------------------------
+# View: logout_view
+# ---------------------------------------------------------------------------
+
+def logout_view(request):
+    """Log out the current user and redirect to the login page."""
+    logout(request)
+    return redirect('login')
 
 
 # ---------------------------------------------------------------------------

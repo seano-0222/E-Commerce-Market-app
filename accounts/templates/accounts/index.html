@@ -1,0 +1,318 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>E-Commerce Market | Home</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f3f4f6;
+            min-height: 100vh;
+        }
+
+        /* ── Navbar ── */
+        .navbar {
+            background: #1a1a2e;
+            padding: 14px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+        }
+        .navbar .brand {
+            color: #fff;
+            font-size: 1.2rem;
+            font-weight: 800;
+            letter-spacing: .5px;
+            text-decoration: none;
+        }
+        .navbar .brand span { color: #4f8ef7; }
+        .navbar .nav-actions { display: flex; gap: 10px; align-items: center; }
+        .btn-nav {
+            padding: 8px 20px;
+            border-radius: 8px;
+            font-size: .85rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: opacity .2s;
+        }
+        .btn-nav:hover { opacity: .85; }
+        .btn-login  { background: #4f8ef7; color: #fff; }
+        .btn-admin  { background: #374151; color: #d1d5db; border: 1px solid #4b5563; }
+        .btn-logout { background: #ef4444; color: #fff; }
+
+        /* ── Hero ── */
+        .hero {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%);
+            color: #fff;
+            padding: 80px 40px;
+            text-align: center;
+        }
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+            line-height: 1.15;
+        }
+        .hero h1 span { color: #4f8ef7; }
+        .hero p {
+            font-size: 1.1rem;
+            color: #9ca3af;
+            max-width: 560px;
+            margin: 0 auto 32px;
+        }
+        .hero-btns { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; }
+        .btn-hero-primary {
+            background: #4f8ef7;
+            color: #fff;
+            padding: 14px 32px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: .95rem;
+            text-decoration: none;
+            transition: opacity .2s, transform .1s;
+        }
+        .btn-hero-primary:hover { opacity: .88; transform: translateY(-2px); }
+        .btn-hero-secondary {
+            background: transparent;
+            color: #fff;
+            padding: 14px 32px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: .95rem;
+            text-decoration: none;
+            border: 2px solid rgba(255,255,255,.25);
+            transition: border-color .2s;
+        }
+        .btn-hero-secondary:hover { border-color: rgba(255,255,255,.7); }
+
+        /* ── Section ── */
+        .section { padding: 56px 40px; max-width: 1100px; margin: 0 auto; }
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 4px;
+        }
+        .section-sub {
+            font-size: .88rem;
+            color: #6b7280;
+            margin-bottom: 28px;
+        }
+
+        /* ── Cards grid ── */
+        .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
+        .card {
+            background: #fff;
+            border-radius: 14px;
+            padding: 24px;
+            box-shadow: 0 2px 12px rgba(0,0,0,.07);
+            text-decoration: none;
+            color: inherit;
+            border-top: 4px solid transparent;
+            transition: transform .2s, box-shadow .2s;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,.12); }
+        .card-icon { font-size: 2rem; }
+        .card-title { font-size: 1rem; font-weight: 700; color: #111827; }
+        .card-desc  { font-size: .82rem; color: #6b7280; line-height: 1.5; }
+        .card-badge {
+            align-self: flex-start;
+            font-size: .72rem;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 20px;
+            margin-top: 4px;
+        }
+
+        /* accent colours per card */
+        .accent-blue   { border-top-color: #3b82f6; }
+        .accent-green  { border-top-color: #10b981; }
+        .accent-orange { border-top-color: #f59e0b; }
+        .accent-purple { border-top-color: #8b5cf6; }
+        .accent-red    { border-top-color: #ef4444; }
+        .accent-teal   { border-top-color: #14b8a6; }
+
+        .badge-blue   { background: #dbeafe; color: #1d4ed8; }
+        .badge-green  { background: #d1fae5; color: #065f46; }
+        .badge-orange { background: #fef3c7; color: #92400e; }
+        .badge-purple { background: #ede9fe; color: #5b21b6; }
+        .badge-red    { background: #fee2e2; color: #991b1b; }
+        .badge-teal   { background: #ccfbf1; color: #0f766e; }
+        .badge-gray   { background: #f3f4f6; color: #6b7280; }
+
+        /* ── Team section ── */
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 16px;
+        }
+        .team-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px 16px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,.06);
+        }
+        .team-avatar {
+            width: 52px; height: 52px;
+            background: linear-gradient(135deg,#4f8ef7,#8b5cf6);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: #fff; font-weight: 700; font-size: 1.1rem;
+            margin: 0 auto 10px;
+        }
+        .team-name  { font-size: .9rem; font-weight: 700; color: #111827; }
+        .team-task  { font-size: .75rem; color: #6b7280; margin-top: 4px; }
+
+        /* ── Footer ── */
+        footer {
+            background: #1a1a2e;
+            color: #6b7280;
+            text-align: center;
+            padding: 24px;
+            font-size: .82rem;
+            margin-top: 40px;
+        }
+
+        @media (max-width: 600px) {
+            .hero h1 { font-size: 2rem; }
+            .section { padding: 40px 20px; }
+            .navbar  { padding: 14px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="{% url 'index' %}" class="brand">&#128722; E-Commerce <span>Market</span></a>
+        <div class="nav-actions">
+            {% if user.is_authenticated %}
+                <span style="color:#9ca3af;font-size:.85rem;">Hi, {{ user.username }}</span>
+                <a href="{% url 'logout' %}" class="btn-nav btn-logout">Logout</a>
+            {% else %}
+                <a href="{% url 'login' %}"  class="btn-nav btn-login">Login</a>
+            {% endif %}
+            <a href="/admin/" class="btn-nav btn-admin">Admin</a>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+        <h1>Welcome to<br /><span>E-Commerce Market</span></h1>
+        <p>A collaborative Django project managing accounts, products, orders, inventory and more.</p>
+        <div class="hero-btns">
+            <a href="{% url 'register_person' %}" class="btn-hero-primary">&#43; Register Person</a>
+            <a href="{% url 'login' %}"           class="btn-hero-secondary">Login to Continue</a>
+        </div>
+    </section>
+
+    <!-- Accounts section (Tormes) -->
+    <div class="section">
+        <p class="section-title">&#128100; Accounts &mdash; <em>Tormes</em></p>
+        <p class="section-sub">Manage the core identity system: Persons, Customers, and Vendors.</p>
+        <div class="cards">
+            <a href="{% url 'register_person' %}" class="card accent-blue">
+                <span class="card-icon">&#128101;</span>
+                <span class="card-title">Register Person</span>
+                <span class="card-desc">Create a new base identity record for a user.</span>
+                <span class="card-badge badge-blue">Tormes</span>
+            </a>
+            <a href="{% url 'register_customer' %}" class="card accent-green">
+                <span class="card-icon">&#128704;</span>
+                <span class="card-title">Register Customer</span>
+                <span class="card-desc">Assign a Person as a Customer in the marketplace.</span>
+                <span class="card-badge badge-green">Tormes</span>
+            </a>
+            <a href="{% url 'register_vendor' %}" class="card accent-orange">
+                <span class="card-icon">&#127978;</span>
+                <span class="card-title">Register Vendor</span>
+                <span class="card-desc">Assign a Person as a Vendor and set up their store.</span>
+                <span class="card-badge badge-orange">Tormes</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Other apps (placeholders for team) -->
+    <div class="section" style="background:#fff;border-radius:16px;padding:40px;margin-bottom:24px;max-width:1100px;margin:0 auto 40px;">
+        <p class="section-title">&#128230; Other App Modules</p>
+        <p class="section-sub">Modules being developed by other team members. Links will activate once merged.</p>
+        <div class="cards">
+            <div class="card accent-purple">
+                <span class="card-icon">&#128218;</span>
+                <span class="card-title">Categories &amp; Products</span>
+                <span class="card-desc">Browse and manage product listings and categories.</span>
+                <span class="card-badge badge-purple">Alipin</span>
+            </div>
+            <div class="card accent-teal">
+                <span class="card-icon">&#128722;</span>
+                <span class="card-title">Cart &amp; CartItems</span>
+                <span class="card-desc">Shopping cart management for customers.</span>
+                <span class="card-badge badge-teal">Malubay</span>
+            </div>
+            <div class="card accent-red">
+                <span class="card-icon">&#128179;</span>
+                <span class="card-title">Orders, Payment &amp; Shipment</span>
+                <span class="card-desc">Order lifecycle, payments and shipping tracking.</span>
+                <span class="card-badge badge-red">Capendit</span>
+            </div>
+            <div class="card accent-blue">
+                <span class="card-icon">&#127981;</span>
+                <span class="card-title">Inventory &amp; Warehouse</span>
+                <span class="card-desc">Stock levels and warehouse management.</span>
+                <span class="card-badge badge-blue">Capuras</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Team -->
+    <div class="section">
+        <p class="section-title">&#128101; Group Members</p>
+        <p class="section-sub">Each member is responsible for their assigned app module.</p>
+        <div class="team-grid">
+            <div class="team-card">
+                <div class="team-avatar">T</div>
+                <div class="team-name">Tormes</div>
+                <div class="team-task">Person, Customer, Vendor</div>
+            </div>
+            <div class="team-card">
+                <div class="team-avatar">A</div>
+                <div class="team-name">Alipin</div>
+                <div class="team-task">Category, Product, Review</div>
+            </div>
+            <div class="team-card">
+                <div class="team-avatar">M</div>
+                <div class="team-name">Malubay</div>
+                <div class="team-task">Cart, CartItem</div>
+            </div>
+            <div class="team-card">
+                <div class="team-avatar">C</div>
+                <div class="team-name">Capendit</div>
+                <div class="team-task">Order, OrderItem, Payment, Shipment, Platform</div>
+            </div>
+            <div class="team-card">
+                <div class="team-avatar">C</div>
+                <div class="team-name">Capuras</div>
+                <div class="team-task">Inventory, Warehouse</div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2026 E-Commerce Market &mdash; Group Project &nbsp;|&nbsp; Django E-Commerce System
+    </footer>
+
+</body>
+</html>
