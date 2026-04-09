@@ -150,4 +150,4 @@ Default superuser (development only):
 | `Alipin` | Alipin | Merged |
 | `Malubay` | Malubay | Integrated |
 | `Capendit` | Capendit | Integrated (manual extract) |
-| `Capuras` | Capuras | Integrated (built from scratch) |
+| `Capuras` | Capuras | Integrated (manual extract) |
