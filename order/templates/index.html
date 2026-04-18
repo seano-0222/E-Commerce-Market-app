@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Orders</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="container mt-4">
+    <h1 class="mb-3">Order List</h1>
+    <a href="{% url 'add-new-order' %}" class="btn btn-primary me-2">+ Add New Order</a>
+    <a href="{% url 'add-new-platform' %}" class="btn btn-secondary">+ Add New Platform</a>
+    <table class="table table-bordered table-striped mt-3">
+        <thead class="table-dark">
+            <tr>
+                <th>Order ID</th>
+                <th>Customer</th>
+                <th>Platform</th>
+                <th>Status</th>
+                <th>Total Amount</th>
+                <th>Order Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+            <tr>
+                <td>{{ order.id }}</td>
+                <td>{{ order.customer }}</td>
+                <td>{{ order.platform }}</td>
+                <td>{{ order.status }}</td>
+                <td>{{ order.total_amount }}</td>
+                <td>{{ order.order_date }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" class="text-center">No orders yet.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
