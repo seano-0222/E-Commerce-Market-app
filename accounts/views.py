@@ -13,7 +13,7 @@ Each view follows the standard Django POST/GET pattern:
 
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import login, logout
 from django.contrib.auth.forms import AuthenticationForm
 
 from .forms import PersonForm, CustomerForm, VendorForm
@@ -152,38 +152,40 @@ def register_vendor(request):
     return render(request, 'accounts/vendor_register.html', {'form': form})
 
 def add_person(request):
+    """Add a new Person record for the assignment requirement."""
     if request.method == 'POST':
         form = PersonForm(request.POST)
         if form.is_valid():
             form.save()
+            messages.success(request, 'New person record added successfully.')
             return redirect('index')
     else:
         form = PersonForm()
 
-    return render(request, 'add_person.html', {'form': form})
+    return render(request, 'accounts/addNewPerson.html', {'form': form})
 
 
-# Add Vendor
 def add_vendor(request):
     if request.method == 'POST':
-        form = VendorFullForm(request.POST)
+        form = VendorForm(request.POST)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Vendor record added successfully.')
             return redirect('index')
     else:
-        form = VendorFullForm()
+        form = VendorForm()
 
-    return render(request, 'add_vendor.html', {'form': form})
+    return render(request, 'accounts/vendor_register.html', {'form': form})
 
 
-# Add Customer
 def add_customer(request):
     if request.method == 'POST':
-        form = CustomerFullForm(request.POST)
+        form = CustomerForm(request.POST)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Customer record added successfully.')
             return redirect('index')
     else:
-        form = CustomerFullForm()
+        form = CustomerForm()
 
-    return render(request, 'add_customer.html', {'form': form})
+    return render(request, 'accounts/customer_register.html', {'form': form})
