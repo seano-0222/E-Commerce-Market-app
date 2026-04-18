@@ -18,4 +18,5 @@ urlpatterns = [
     # Cart app (Malubay)
     path('cart/', include('cart.urls')),
     path('orders/', include('orders.urls')),
+    path('inventory/', include('inventory.urls')),
 ]

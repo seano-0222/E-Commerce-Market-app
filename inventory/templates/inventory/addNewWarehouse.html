@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add New Warehouse</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; }
+    nav {
+      background: linear-gradient(135deg, #1e293b, #0f172a);
+      padding: 1rem 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid #334155;
+    }
+    .nav-brand { font-size: 1.25rem; font-weight: 700; color: #4f8ef7; text-decoration: none; }
+    .nav-links a { color: #94a3b8; text-decoration: none; margin-left: 1.5rem; font-size: 0.9rem; transition: color .2s; }
+    .nav-links a:hover { color: #a78bfa; }
+
+    .container { max-width: 600px; margin: 3rem auto; padding: 0 1.5rem; }
+
+    .back-link {
+      display: inline-flex; align-items: center; gap: .4rem;
+      color: #94a3b8; text-decoration: none; font-size: .875rem;
+      margin-bottom: 1.5rem; transition: color .2s;
+    }
+    .back-link:hover { color: #a78bfa; }
+
+    .form-card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 16px;
+      padding: 2.25rem;
+    }
+    .form-card h1 {
+      font-size: 1.5rem; font-weight: 700; color: #f8fafc;
+      margin-bottom: .4rem;
+    }
+    .form-card .subtitle {
+      color: #64748b; font-size: .875rem; margin-bottom: 2rem;
+    }
+
+    .form-group { margin-bottom: 1.4rem; }
+    label {
+      display: block; font-size: .85rem; font-weight: 500;
+      color: #94a3b8; margin-bottom: .45rem;
+    }
+    .form-input {
+      width: 100%;
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: .7rem 1rem;
+      color: #e2e8f0;
+      font-size: .9rem;
+      font-family: inherit;
+      transition: border-color .2s;
+      outline: none;
+    }
+    .form-input:focus { border-color: #a78bfa; }
+    .form-input::placeholder { color: #475569; }
+    textarea.form-input { resize: vertical; }
+
+    .errorlist {
+      list-style: none;
+      margin-top: .35rem;
+    }
+    .errorlist li {
+      color: #f87171; font-size: .8rem;
+    }
+
+    .success-banner {
+      background: #14532d22;
+      border: 1px solid #14532d;
+      border-radius: 10px;
+      padding: .9rem 1.1rem;
+      color: #4ade80;
+      font-size: .875rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: .85rem;
+      background: #4f8ef7;
+      color: #0f172a;
+      font-size: 1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background .2s, transform .15s;
+      margin-top: .5rem;
+    }
+    .btn-submit:hover { background: #c4b5fd; transform: translateY(-1px); }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="/" class="nav-brand">Inventory System</a>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/inventory/add-new-record">Add Record</a>
+      <a href="/inventory/warehouses/">Warehouses</a>
+      <a href="/inventory/">Inventory</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <a href="/" class="back-link">← Back to Home</a>
+
+    <div class="form-card">
+      <h1>Add New Warehouse</h1>
+      <p class="subtitle">Fill in the details below to register a new warehouse.</p>
+
+      {% if success %}
+      <div class="success-banner">
+        ✅ Warehouse <strong>{{ saved_name }}</strong> was added successfully!
+      </div>
+      {% endif %}
+
+      <form method="post">
+        {% csrf_token %}
+        {% for field in form %}
+        <div class="form-group">
+          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+          {{ field }}
+          {% if field.errors %}
+          <ul class="errorlist">
+            {% for error in field.errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+          {% endif %}
+        </div>
+        {% endfor %}
+        <button type="submit" class="btn-submit">Add Warehouse</button>
+      </form>
+    </div>
+  </div>
+</body>
+</html>
