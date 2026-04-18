@@ -14,6 +14,22 @@ from django.contrib import messages
 from accounts.models import Customer
 from products.models import Product
 from .models import Cart, CartItem
+from .forms import CartForm  
+
+def add_new_cart(request):
+    """
+    Add a new Cart record using a form (for lab requirement).
+    """
+    if request.method == 'POST':
+        form = CartForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'New cart record added successfully.')
+            return redirect('/')  
+    else:
+        form = CartForm()
+
+    return render(request, 'cart/addNewCart.html', {'form': form})
 
 
 def _get_or_create_cart(customer):
