@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head><title>Payments</title></head>
+<body>
+    <h1>Payment List</h1>
+    <a href="{% url 'add-new-payment' %}">+ Add New Payment</a>
+    <ul>
+        {% for payment in payments %}
+            <li>Payment #{{ payment.id }} | Order #{{ payment.order.id }} | {{ payment.amount }} | {{ payment.payment_method }}</li>
+        {% empty %}
+            <li>No payments yet.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

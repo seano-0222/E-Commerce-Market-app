@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head><title>Shipments</title></head>
+<body>
+    <h1>Shipment List</h1>
+    <a href="{% url 'add-new-shipment' %}">+ Add New Shipment</a>
+    <ul>
+        {% for shipment in shipments %}
+            <li>Shipment #{{ shipment.id }} | Order #{{ shipment.order.id }} | {{ shipment.status }} | {{ shipment.delivery_address }}</li>
+        {% empty %}
+            <li>No shipments yet.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

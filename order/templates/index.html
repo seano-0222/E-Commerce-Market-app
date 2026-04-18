@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head><title>Orders</title></head>
+<body>
+    <h1>Order List</h1>
+    <a href="{% url 'add-new-order' %}">+ Add New Order</a> |
+    <a href="{% url 'add-new-platform' %}">+ Add New Platform</a>
+    <ul>
+        {% for order in orders %}
+            <li>Order #{{ order.id }} | {{ order.status }} | {{ order.order_date }} | {{ order.platform }}</li>
+        {% empty %}
+            <li>No orders yet.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

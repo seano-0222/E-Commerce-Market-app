@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head><title>Order Items</title></head>
+<body>
+    <h1>Order Item List</h1>
+    <a href="{% url 'add-new-orderitem' %}">+ Add New Order Item</a>
+    <ul>
+        {% for item in items %}
+            <li>Item #{{ item.id }} | Order #{{ item.order.id }} | {{ item.product }} | Qty: {{ item.quantity }} | {{ item.price }}</li>
+        {% empty %}
+            <li>No order items yet.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
