@@ -150,3 +150,40 @@ def register_vendor(request):
         form = VendorForm()
 
     return render(request, 'accounts/vendor_register.html', {'form': form})
+
+def add_person(request):
+    if request.method == 'POST':
+        form = PersonForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('index')
+    else:
+        form = PersonForm()
+
+    return render(request, 'add_person.html', {'form': form})
+
+
+# Add Vendor
+def add_vendor(request):
+    if request.method == 'POST':
+        form = VendorFullForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('index')
+    else:
+        form = VendorFullForm()
+
+    return render(request, 'add_vendor.html', {'form': form})
+
+
+# Add Customer
+def add_customer(request):
+    if request.method == 'POST':
+        form = CustomerFullForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('index')
+    else:
+        form = CustomerFullForm()
+
+    return render(request, 'add_customer.html', {'form': form})
