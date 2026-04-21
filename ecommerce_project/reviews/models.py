@@ -21,8 +21,6 @@ class Review(models.Model):
         # Note: You'll need to implement a Purchase model to track purchases
         # For now, this is a placeholder validation
         from django.core.exceptions import ValidationError
-        if not self.has_customer_purchased_product():
-            raise ValidationError('Customer must have purchased the product before reviewing')
 
         # Check if customer already reviewed this product
         if Review.objects.filter(customer=self.customer, product=self.product).exists():
@@ -31,16 +29,6 @@ class Review(models.Model):
         self.full_clean()
         super().save(*args, **kwargs)
 
-    def has_customer_purchased_product(self):
-        # Implement purchase check logic
-        # You would need an Order/OrderItem model
-        # For demonstration, let's create a placeholder
-        from orders.models import OrderItem
-        return OrderItem.objects.filter(
-            order__customer=self.customer,
-            product=self.product,
-            order__status='completed'
-        ).exists()
 
     class Meta:
         unique_together = ['customer', 'product']  # Ensures one review per product per customer

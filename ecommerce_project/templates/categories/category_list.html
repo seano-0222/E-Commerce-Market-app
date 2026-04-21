@@ -1,23 +1,416 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Categories</h1>
+<!-- Hero Section for Categories Page -->
+<section class="hero">
+    <h1>📂 <span>Categories</span></h1>
+    <p>Browse our product collections by category and find exactly what you're looking for.</p>
 
-<div class="product-grid">
-    {% for category in categories %}
-        <div class="product-card">
-            <h3>{{ category.name }}</h3>
-            <p>{{ category.description|default:"No description" }}</p>
-            <p><strong>Products:</strong> {{ category.products.count }}</p>
-            <a href="{% url 'categories:category_detail' category.category_id %}" class="btn">View Category</a>
-            <a href="{% url 'products:products_by_category' category.category_id %}" class="btn">View Products</a>
+    <!-- Small Stats Indicators -->
+    <div class="stats-indicators">
+        <div class="stat-indicator">
+            <span class="stat-indicator-number">{{ categories.count }}</span>
+            <span class="stat-indicator-label">Total Categories</span>
         </div>
-    {% empty %}
-        <p>No categories available. Please add categories through admin panel.</p>
-    {% endfor %}
+    </div>
+</section>
+
+<!-- Categories Grid Section -->
+<div class="categories-section">
+    <div class="categories-container">
+        <div class="categories-header">
+            <h2>All Categories</h2>
+            <p>Explore our wide range of product categories</p>
+        </div>
+
+        <div class="categories-grid">
+            {% for category in categories %}
+                <div class="category-card">
+                    <div class="category-card-icon">
+                        {% if category.name == "Electronics" %}📱
+                        {% elif category.name == "Clothing" %}👕
+                        {% elif category.name == "Books" %}📚
+                        {% elif category.name == "Home" %}🏠
+                        {% elif category.name == "Toys" %}🎮
+                        {% elif category.name == "Sports" %}⚽
+                        {% elif category.name == "Beauty" %}💄
+                        {% elif category.name == "Food" %}🍕
+                        {% else %}🏷️
+                        {% endif %}
+                    </div>
+                    <div class="category-card-content">
+                        <h3 class="category-card-name">{{ category.name }}</h3>
+                        <p class="category-card-desc">{{ category.description|default:"No description available"|truncatewords:15 }}</p>
+                        <div class="category-card-stats">
+                            <span class="product-count">📦 {{ category.products.count }} product{{ category.products.count|pluralize }}</span>
+                        </div>
+                        <div class="category-card-actions">
+                            <a href="{% url 'categories:category_detail' category.category_id %}" class="btn-secondary-small">View Details</a>
+                            <a href="{% url 'products:products_by_category' category.category_id %}" class="btn-primary-small">Browse Products →</a>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="empty-state">
+                    <span class="empty-icon">📂</span>
+                    <p>No categories available. Please add some categories.</p>
+                    <a href="{% url 'categories:add_category' %}" class="btn-primary-action" style="margin-top: 20px; display: inline-block;">+ Add Category →</a>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Action Buttons Footer -->
+        <div class="action-buttons-footer">
+            <a href="{% url 'categories:add_category' %}" class="btn-admin-action">
+                + Add New Category
+            </a>
+        </div>
+    </div>
 </div>
 
-<div style="margin-top: 20px;">
-    <a href="{% url 'admin:index' %}" class="btn">Add Category in Admin</a>
-</div>
+<style>
+    /* Force dark background on all elements */
+    html, body {
+        background: #0f0f1a !important;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Override any white backgrounds from base template */
+    body, .container, .main, main, .content, [class*="container"], [class*="wrapper"], [class*="content"] {
+        background: #0f0f1a !important;
+    }
+
+    /* Hero Section */
+    .hero {
+        background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 60%, #0f3460 100%);
+        color: #fff;
+        padding: 60px 40px;
+        text-align: center;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+        position: relative;
+        z-index: 1;
+    }
+
+    .hero h1 {
+        font-size: 3rem;
+        font-weight: 800;
+        margin-bottom: 16px;
+        line-height: 1.15;
+        color: #fff;
+    }
+
+    .hero h1 span {
+        color: #4f8ef7;
+    }
+
+    .hero p {
+        font-size: 1rem;
+        color: #9ca3af;
+        max-width: 560px;
+        margin: 0 auto 24px;
+    }
+
+    /* Stats Indicators */
+    .stats-indicators {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 12px;
+        margin: 24px auto 0;
+        padding: 10px 24px;
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 50px;
+        display: inline-flex;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .stat-indicator {
+        display: flex;
+        align-items: baseline;
+        gap: 6px;
+    }
+
+    .stat-indicator-number {
+        font-size: 1.3rem;
+        font-weight: 800;
+        color: #4f8ef7;
+    }
+
+    .stat-indicator-label {
+        font-size: 0.85rem;
+        color: #d1d5db;
+        font-weight: 500;
+    }
+
+    /* Categories Section */
+    .categories-section {
+        max-width: 1200px;
+        margin: 40px auto;
+        padding: 0 20px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .categories-container {
+        background: #1a1a2e;
+        border-radius: 20px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        overflow: hidden;
+        border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .categories-header {
+        background: #0f0f1a;
+        padding: 32px;
+        text-align: center;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .categories-header h2 {
+        color: #fff;
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .categories-header p {
+        color: #9ca3af;
+        font-size: 0.9rem;
+    }
+
+    /* Categories Grid */
+    .categories-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 24px;
+        padding: 32px;
+        background: #1a1a2e;
+    }
+
+    .category-card {
+        background: #0f0f1a;
+        border-radius: 16px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(255,255,255,0.08);
+        display: flex;
+        flex-direction: column;
+    }
+
+    .category-card:hover {
+        transform: translateY(-4px);
+        border-color: rgba(79, 142, 247, 0.3);
+        box-shadow: 0 12px 28px rgba(0,0,0,0.3);
+    }
+
+    .category-card-icon {
+        font-size: 3rem;
+        text-align: center;
+        padding: 30px 20px 20px;
+        background: linear-gradient(135deg, #1a1a2e, #0f0f1a);
+    }
+
+    .category-card-content {
+        padding: 20px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        background: #0f0f1a;
+    }
+
+    .category-card-name {
+        color: #fff;
+        font-size: 1.3rem;
+        font-weight: 700;
+        margin-bottom: 12px;
+    }
+
+    .category-card-desc {
+        color: #9ca3af;
+        font-size: 0.85rem;
+        line-height: 1.5;
+        margin-bottom: 16px;
+        flex: 1;
+    }
+
+    .category-card-stats {
+        margin-bottom: 20px;
+    }
+
+    .product-count {
+        display: inline-block;
+        padding: 4px 12px;
+        background: rgba(79, 142, 247, 0.1);
+        color: #4f8ef7;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        border: 1px solid rgba(79, 142, 247, 0.2);
+    }
+
+    .category-card-actions {
+        display: flex;
+        gap: 12px;
+        margin-top: auto;
+    }
+
+    .btn-primary-small {
+        flex: 1;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 10px 16px;
+        background: linear-gradient(135deg, #4f8ef7, #8b5cf6);
+        color: #fff;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        transition: all 0.2s;
+        text-align: center;
+    }
+
+    .btn-primary-small:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(79, 142, 247, 0.3);
+    }
+
+    .btn-secondary-small {
+        flex: 1;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 10px 16px;
+        background: rgba(79, 142, 247, 0.1);
+        color: #4f8ef7;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        transition: all 0.2s;
+        border: 1px solid rgba(79, 142, 247, 0.3);
+        text-align: center;
+    }
+
+    .btn-secondary-small:hover {
+        background: rgba(79, 142, 247, 0.2);
+        transform: translateY(-2px);
+    }
+
+    /* Action Buttons Footer */
+    .action-buttons-footer {
+        text-align: center;
+        padding: 24px 32px 32px;
+        border-top: 1px solid rgba(255,255,255,0.08);
+        background: #1a1a2e;
+    }
+
+    .btn-admin-action {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 28px;
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: #fff;
+        text-decoration: none;
+        border-radius: 40px;
+        font-weight: 700;
+        font-size: 0.9rem;
+        transition: all 0.2s;
+        box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+    }
+
+    .btn-admin-action:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 16px rgba(16, 185, 129, 0.4);
+    }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 80px 40px;
+        background: #0f0f1a;
+        border-radius: 20px;
+        color: #9ca3af;
+        grid-column: 1 / -1;
+    }
+
+    .empty-icon {
+        font-size: 4rem;
+        display: block;
+        margin-bottom: 20px;
+        opacity: 0.5;
+    }
+
+    .empty-state p {
+        font-size: 1rem;
+        margin-bottom: 10px;
+    }
+
+    .btn-primary-action {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 28px;
+        background: linear-gradient(135deg, #4f8ef7, #8b5cf6);
+        color: #fff;
+        text-decoration: none;
+        border-radius: 40px;
+        font-weight: 700;
+        font-size: 0.9rem;
+        transition: all 0.2s;
+        box-shadow: 0 2px 8px rgba(79, 142, 247, 0.3);
+    }
+
+    .btn-primary-action:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 16px rgba(79, 142, 247, 0.4);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .hero {
+            padding: 40px 20px;
+        }
+
+        .hero h1 {
+            font-size: 2rem;
+        }
+
+        .categories-grid {
+            grid-template-columns: 1fr;
+            padding: 20px;
+        }
+
+        .categories-header {
+            padding: 24px;
+        }
+
+        .categories-header h2 {
+            font-size: 1.4rem;
+        }
+
+        .category-card-actions {
+            flex-direction: column;
+        }
+
+        .stats-indicators {
+            scale: 0.9;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .hero h1 {
+            font-size: 1.5rem;
+        }
+
+        .category-card-name {
+            font-size: 1.1rem;
+        }
+    }
+</style>
 {% endblock %}
