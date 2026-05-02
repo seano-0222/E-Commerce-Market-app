@@ -7,7 +7,7 @@ for the e-commerce identity system.
 ERD Summary:
     Person (supertype)
         └── Customer (subtype) — OneToOne → Person
-        └── Vendor   (subtype) — OneToOne → Person
+        └── Vendor (subtype) — OneToOne → Person
 
 Business Rules:
     - Every Person must be EITHER a Customer OR a Vendor, never both.
@@ -22,22 +22,22 @@ from django.core.exceptions import ValidationError
 # ---------------------------------------------------------------------------
 # Supertype: Person
 # ---------------------------------------------------------------------------
-
 class Person(models.Model):
     """
     Supertype that holds common identity information for every user
     in the system (both customers and vendors).
 
     NOTE: Django's built-in User model is intentionally NOT used.
-          Person is the sole identity source.
+    Person is the sole identity source.
     """
 
-    person_id  = models.AutoField(primary_key=True)
+    person_id = models.AutoField(primary_key=True)
     first_name = models.CharField(max_length=100)
-    last_name  = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+
     # unique=True enforces business rule: no duplicate emails
-    email      = models.EmailField(unique=True)
-    address    = models.TextField()
+    email = models.EmailField(unique=True)
+    address = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
     # ------------------------------------------------------------------
@@ -50,40 +50,39 @@ class Person(models.Model):
         Uses reverse OneToOne accessors created by Customer.person
         and Vendor.person (related_name='customer' / 'vendor').
         """
-        if hasattr(self, 'customer'):
-            return 'Customer'
-        elif hasattr(self, 'vendor'):
-            return 'Vendor'
-        return 'Unassigned'
+        if hasattr(self, "customer"):
+            return "Customer"
+        elif hasattr(self, "vendor"):
+            return "Vendor"
+        return "Unassigned"
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} ({self.email})"
 
     class Meta:
-        verbose_name        = 'Person'
-        verbose_name_plural = 'Persons'
-        ordering            = ['last_name', 'first_name']
+        verbose_name = "Person"
+        verbose_name_plural = "Persons"
+        ordering = ["last_name", "first_name"]
 
 
 # ---------------------------------------------------------------------------
 # Subtype: Customer
 # ---------------------------------------------------------------------------
-
 class Customer(models.Model):
     """
     Subtype of Person for buyers in the e-commerce platform.
 
     Future relationships (handled by other apps):
-        - Cart    → OneToOne  back-reference from Cart app
-        - Order   → OneToMany back-reference from Orders app
-        - Review  → OneToMany back-reference from Reviews app
+        - Cart → OneToOne back-reference from Cart app
+        - Order → OneToMany back-reference from Orders app
+        - Review → OneToMany back-reference from Reviews app
     """
 
     customer_id = models.AutoField(primary_key=True)
-    person      = models.OneToOneField(
+    person = models.OneToOneField(
         Person,
         on_delete=models.CASCADE,
-        related_name='customer',   # allows person.customer reverse lookup
+        related_name="customer",  # allows person.customer reverse lookup
     )
 
     # ------------------------------------------------------------------
@@ -94,10 +93,10 @@ class Customer(models.Model):
         Prevent a Person from being both a Customer and a Vendor.
 
         Called automatically by full_clean(), which is triggered in save().
+
         Raises ValidationError if the linked Person already has a Vendor.
         """
-        # hasattr uses the related_name 'vendor' defined on Vendor.person
-        if hasattr(self.person, 'vendor'):
+        if hasattr(self.person, "vendor"):
             raise ValidationError(
                 f"'{self.person}' is already registered as a Vendor. "
                 "A person cannot be both a Customer and a Vendor."
@@ -112,14 +111,13 @@ class Customer(models.Model):
         return f"Customer: {self.person.first_name} {self.person.last_name}"
 
     class Meta:
-        verbose_name        = 'Customer'
-        verbose_name_plural = 'Customers'
+        verbose_name = "Customer"
+        verbose_name_plural = "Customers"
 
 
 # ---------------------------------------------------------------------------
 # Subtype: Vendor
 # ---------------------------------------------------------------------------
-
 class Vendor(models.Model):
     """
     Subtype of Person for sellers in the e-commerce platform.
@@ -128,11 +126,11 @@ class Vendor(models.Model):
         - Product → OneToMany back-reference from Products app
     """
 
-    vendor_id  = models.AutoField(primary_key=True)
-    person     = models.OneToOneField(
+    vendor_id = models.AutoField(primary_key=True)
+    person = models.OneToOneField(
         Person,
         on_delete=models.CASCADE,
-        related_name='vendor',   # allows person.vendor reverse lookup
+        related_name="vendor",  # allows person.vendor reverse lookup
     )
     store_name = models.CharField(max_length=150)
 
@@ -144,10 +142,10 @@ class Vendor(models.Model):
         Prevent a Person from being both a Vendor and a Customer.
 
         Called automatically by full_clean(), which is triggered in save().
+
         Raises ValidationError if the linked Person already has a Customer.
         """
-        # hasattr uses the related_name 'customer' defined on Customer.person
-        if hasattr(self.person, 'customer'):
+        if hasattr(self.person, "customer"):
             raise ValidationError(
                 f"'{self.person}' is already registered as a Customer. "
                 "A person cannot be both a Vendor and a Customer."
@@ -165,5 +163,5 @@ class Vendor(models.Model):
         )
 
     class Meta:
-        verbose_name        = 'Vendor'
-        verbose_name_plural = 'Vendors'
+        verbose_name = "Vendor"
+        verbose_name_plural = "Vendors"
