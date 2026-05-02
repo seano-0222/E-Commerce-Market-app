@@ -1,11 +1,22 @@
+"""
+URL configuration for the E-Commerce Market project.
+"""
+
 from django.contrib import admin
 from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('order.urls')),
-    path('Order/', include('order.urls')),
-    path('OrderItem/', include('orderitem.urls')),
-    path('Payment/', include('payment.urls')),
-    path('Shipment/', include('shipment.urls')),
+    # Accounts app (Tormes) — includes index, login, register
+    path('', include('accounts.urls')),
+    # Categories app (Alipin)
+    path('categories/', include('categories.urls')),
+    # Products app (Alipin)
+    path('products/', include('products.urls')),
+    # Reviews app (Alipin)
+    path('reviews/', include('reviews.urls')),
+    # Cart app (Malubay)
+    path('cart/', include('cart.urls')),
+    path('orders/', include('orders.urls')),
+    path('inventory/', include('inventory.urls')),
 ]

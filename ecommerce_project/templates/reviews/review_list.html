@@ -1,0 +1,495 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Hero Section for Reviews -->
+<section class="hero">
+    <div class="hero-content">
+        <div class="reviews-icon-large">
+            ⭐
+        </div>
+        <h1>Reviews for <span>{{ product.name }}</span></h1>
+        <p>See what customers are saying about this product</p>
+    </div>
+</section>
+
+<!-- Reviews Section -->
+<div class="reviews-section">
+    <div class="reviews-container">
+        <!-- User's Review Section -->
+        {% if user_review %}
+            <div class="user-review-card">
+                <div class="user-review-header">
+                    <span class="user-review-icon">👤</span>
+                    <h3>Your Review</h3>
+                </div>
+                <div class="review-rating-large">
+                    {% for i in "12345"|make_list %}
+                        {% if forloop.counter <= user_review.rating %}
+                            <span class="star filled">★</span>
+                        {% else %}
+                            <span class="star">☆</span>
+                        {% endif %}
+                    {% endfor %}
+                    <span class="rating-number">({{ user_review.rating }}/5)</span>
+                </div>
+                <div class="review-comment">
+                    <p>{{ user_review.comment }}</p>
+                </div>
+                <div class="review-date">
+                    <small>Reviewed on {{ user_review.review_date|date:"F j, Y" }}</small>
+                </div>
+            </div>
+        {% else %}
+            <div class="write-review-prompt">
+                <div class="prompt-content">
+                    <span class="prompt-icon">✍️</span>
+                    <h3>Share Your Experience</h3>
+                    <p>Have you tried this product? Let others know what you think!</p>
+                    <a href="{% url 'reviews:add_review' product.product_id %}" class="btn-write-review">
+                        Write a Review
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- All Reviews Section -->
+        <div class="all-reviews-section">
+            <div class="all-reviews-header">
+                <h2>All Reviews</h2>
+                <p>What other customers are saying</p>
+            </div>
+
+            <div class="reviews-list">
+                {% for review in reviews %}
+                    {% if review != user_review %}
+                        <div class="review-card">
+                            <div class="review-header">
+                                <div class="reviewer-info">
+                                    <span class="reviewer-icon">👤</span>
+                                    <strong class="reviewer-name">{{ review.customer.username }}</strong>
+                                </div>
+                                <div class="review-rating">
+                                    {% for i in "12345"|make_list %}
+                                        {% if forloop.counter <= review.rating %}
+                                            <span class="star filled">★</span>
+                                        {% else %}
+                                            <span class="star">☆</span>
+                                        {% endif %}
+                                    {% endfor %}
+                                    <span class="rating-number">({{ review.rating }}/5)</span>
+                                </div>
+                            </div>
+                            <div class="review-content">
+                                <p>{{ review.comment }}</p>
+                            </div>
+                            <div class="review-footer">
+                                <small>Reviewed on {{ review.review_date|date:"F j, Y" }}</small>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% empty %}
+                    <div class="empty-reviews">
+                        <span class="empty-icon">📝</span>
+                        <p>No other reviews yet. Be the first to share your experience!</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Back Button -->
+        <div class="back-action-footer">
+            <a href="{% url 'products:product_detail' product.product_id %}" class="btn-back">
+                ← Back to Product
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Force dark background on all elements */
+    html, body {
+        background: #0f0f1a !important;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Override any white backgrounds from base template */
+    body, .container, .main, main, .content, [class*="container"], [class*="wrapper"], [class*="content"] {
+        background: #0f0f1a !important;
+    }
+
+    /* Hero Section */
+    .hero {
+        background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 60%, #0f3460 100%);
+        color: #fff;
+        padding: 60px 40px;
+        text-align: center;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+        position: relative;
+        z-index: 1;
+    }
+
+    .hero-content {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .reviews-icon-large {
+        font-size: 4rem;
+        margin-bottom: 20px;
+        display: inline-block;
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.1);
+        }
+    }
+
+    .hero h1 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 16px;
+        line-height: 1.15;
+        color: #fff;
+    }
+
+    .hero h1 span {
+        color: #4f8ef7;
+    }
+
+    .hero p {
+        font-size: 1rem;
+        color: #9ca3af;
+    }
+
+    /* Reviews Section */
+    .reviews-section {
+        max-width: 1000px;
+        margin: 40px auto;
+        padding: 0 20px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .reviews-container {
+        background: #1a1a2e;
+        border-radius: 20px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        overflow: hidden;
+        border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    /* User Review Card */
+    .user-review-card {
+        background: linear-gradient(135deg, #0f0f1a, #1a1a2e);
+        border-bottom: 2px solid #4f8ef7;
+        padding: 32px;
+        margin: 0;
+    }
+
+    .user-review-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+
+    .user-review-icon {
+        font-size: 2rem;
+    }
+
+    .user-review-header h3 {
+        color: #4f8ef7;
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .review-rating-large {
+        margin-bottom: 20px;
+    }
+
+    .review-rating-large .star {
+        font-size: 1.3rem;
+    }
+
+    .review-comment {
+        background: #0f0f1a;
+        padding: 20px;
+        border-radius: 12px;
+        margin-bottom: 16px;
+        border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .review-comment p {
+        color: #d1d5db;
+        font-size: 1rem;
+        line-height: 1.6;
+        margin: 0;
+    }
+
+    .review-date {
+        color: #6b7280;
+        font-size: 0.85rem;
+    }
+
+    /* Write Review Prompt */
+    .write-review-prompt {
+        background: linear-gradient(135deg, #0f0f1a, #1a1a2e);
+        border-bottom: 2px solid #10b981;
+        padding: 48px 32px;
+        text-align: center;
+    }
+
+    .prompt-content {
+        max-width: 400px;
+        margin: 0 auto;
+    }
+
+    .prompt-icon {
+        font-size: 3rem;
+        display: block;
+        margin-bottom: 16px;
+    }
+
+    .prompt-content h3 {
+        color: #fff;
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 12px;
+    }
+
+    .prompt-content p {
+        color: #9ca3af;
+        margin-bottom: 24px;
+    }
+
+    .btn-write-review {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 28px;
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: #fff;
+        text-decoration: none;
+        border-radius: 40px;
+        font-weight: 700;
+        font-size: 0.95rem;
+        transition: all 0.2s;
+        box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+    }
+
+    .btn-write-review:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 16px rgba(16, 185, 129, 0.4);
+    }
+
+    /* All Reviews Section */
+    .all-reviews-section {
+        padding: 32px;
+    }
+
+    .all-reviews-header {
+        text-align: center;
+        margin-bottom: 32px;
+    }
+
+    .all-reviews-header h2 {
+        color: #fff;
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .all-reviews-header p {
+        color: #9ca3af;
+        font-size: 0.9rem;
+    }
+
+    /* Reviews List */
+    .reviews-list {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .review-card {
+        background: #0f0f1a;
+        border-radius: 12px;
+        padding: 20px;
+        border: 1px solid rgba(255,255,255,0.08);
+        transition: all 0.2s;
+    }
+
+    .review-card:hover {
+        border-color: rgba(79, 142, 247, 0.3);
+        transform: translateX(4px);
+    }
+
+    .review-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .reviewer-info {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .reviewer-icon {
+        font-size: 1.2rem;
+    }
+
+    .reviewer-name {
+        color: #fff;
+        font-size: 1rem;
+    }
+
+    .review-rating {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .star {
+        font-size: 1.1rem;
+        color: #4b5563;
+    }
+
+    .star.filled {
+        color: #fbbf24;
+    }
+
+    .rating-number {
+        color: #9ca3af;
+        font-size: 0.85rem;
+        margin-left: 6px;
+    }
+
+    .review-content {
+        color: #d1d5db;
+        font-size: 0.95rem;
+        line-height: 1.6;
+        margin-bottom: 12px;
+    }
+
+    .review-footer {
+        color: #6b7280;
+        font-size: 0.75rem;
+    }
+
+    /* Empty Reviews */
+    .empty-reviews {
+        text-align: center;
+        padding: 60px 40px;
+        background: #0f0f1a;
+        border-radius: 12px;
+        color: #9ca3af;
+    }
+
+    .empty-icon {
+        font-size: 3rem;
+        display: block;
+        margin-bottom: 16px;
+        opacity: 0.5;
+    }
+
+    /* Back Button Footer */
+    .back-action-footer {
+        text-align: center;
+        padding: 24px 32px 32px;
+        border-top: 1px solid rgba(255,255,255,0.08);
+        background: #1a1a2e;
+    }
+
+    .btn-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 28px;
+        background: rgba(79, 142, 247, 0.1);
+        color: #4f8ef7;
+        text-decoration: none;
+        border-radius: 40px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: all 0.2s;
+        border: 1px solid rgba(79, 142, 247, 0.3);
+    }
+
+    .btn-back:hover {
+        background: rgba(79, 142, 247, 0.2);
+        transform: translateX(-4px);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .hero {
+            padding: 40px 20px;
+        }
+
+        .hero h1 {
+            font-size: 1.8rem;
+        }
+
+        .user-review-card,
+        .write-review-prompt,
+        .all-reviews-section {
+            padding: 24px;
+        }
+
+        .user-review-header h3 {
+            font-size: 1.2rem;
+        }
+
+        .all-reviews-header h2 {
+            font-size: 1.4rem;
+        }
+
+        .review-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .review-rating-large .star {
+            font-size: 1rem;
+        }
+
+        .review-comment p {
+            font-size: 0.9rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .hero h1 {
+            font-size: 1.3rem;
+        }
+
+        .reviews-icon-large {
+            font-size: 3rem;
+        }
+
+        .prompt-content h3 {
+            font-size: 1.2rem;
+        }
+
+        .reviewer-name {
+            font-size: 0.9rem;
+        }
+
+        .review-content p {
+            font-size: 0.85rem;
+        }
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inventory</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; }
+    nav {
+      background: linear-gradient(135deg, #1e293b, #0f172a);
+      padding: 1rem 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid #334155;
+    }
+    .nav-brand { font-size: 1.25rem; font-weight: 700; color: #a78bfa; text-decoration: none; }
+    .nav-links a { color: #94a3b8; text-decoration: none; margin-left: 1.5rem; font-size: 0.9rem; transition: color .2s; }
+    .nav-links a:hover { color: #a78bfa; }
+    .container { max-width: 1100px; margin: 2.5rem auto; padding: 0 1.5rem; }
+    .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.75rem; }
+    h1 { font-size: 1.75rem; font-weight: 700; color: #f8fafc; }
+    .sub { color: #64748b; font-size: .875rem; margin-top: .25rem; }
+    .warehouse-link { color: #a78bfa; text-decoration: none; font-size: .875rem; }
+    .warehouse-link:hover { text-decoration: underline; }
+    .alert { background: #7f1d1d22; border: 1px solid #7f1d1d; border-radius: 10px; padding: 1rem 1.25rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: .75rem; }
+    .alert-icon { font-size: 1.2rem; }
+    .alert p { color: #f87171; font-size: .875rem; }
+    .alert strong { color: #fca5a5; }
+    table { width: 100%; border-collapse: collapse; background: #1e293b; border-radius: 12px; overflow: hidden; }
+    th { background: #334155; padding: .85rem 1rem; text-align: left; font-size: .78rem; letter-spacing: .05em; text-transform: uppercase; color: #94a3b8; }
+    td { padding: .85rem 1rem; border-bottom: 1px solid #334155; font-size: .875rem; }
+    tr:last-child td { border-bottom: none; }
+    .badge-warn { display: inline-block; padding: .2rem .6rem; border-radius: 999px; font-size: .72rem; font-weight: 600; background: #7f1d1d22; color: #f87171; border: 1px solid #7f1d1d; }
+    .badge-ok { display: inline-block; padding: .2rem .6rem; border-radius: 999px; font-size: .72rem; font-weight: 600; background: #14532d22; color: #4ade80; border: 1px solid #14532d; }
+    .empty { background: #1e293b; border-radius: 12px; padding: 3rem; text-align: center; color: #64748b; }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="/" class="nav-brand">MarketPlace</a>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="{% url 'warehouse_list' %}">Warehouses</a>
+      <a href="/products/">Products</a>
+      <a href="/logout/">Logout</a>
+    </div>
+  </nav>
+  <div class="container">
+    <div class="page-header">
+      <div>
+        <h1>Inventory</h1>
+        <p class="sub">{{ items|length }} product{{ items|length|pluralize }} tracked across all warehouses</p>
+      </div>
+      <a href="{% url 'warehouse_list' %}" class="warehouse-link">View Warehouses →</a>
+    </div>
+
+    {% if low_stock %}
+    <div class="alert">
+      <span class="alert-icon">⚠️</span>
+      <p><strong>{{ low_stock|length }} item{{ low_stock|length|pluralize }}</strong> at or below reorder threshold.</p>
+    </div>
+    {% endif %}
+
+    {% if items %}
+    <table>
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Warehouse</th>
+          <th>Stock</th>
+          <th>Reorder At</th>
+          <th>Status</th>
+          <th>Last Updated</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in items %}
+        <tr>
+          <td>{{ item.product.name }}</td>
+          <td>{{ item.warehouse.name }}</td>
+          <td>{{ item.stock_level }}</td>
+          <td>{{ item.reorder_threshold }}</td>
+          <td>
+            {% if item.needs_reorder %}
+              <span class="badge-warn">Low Stock</span>
+            {% else %}
+              <span class="badge-ok">OK</span>
+            {% endif %}
+          </td>
+          <td>{{ item.last_updated|date:"M d, Y" }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <div class="empty">
+      <p style="font-size:1.1rem; margin-bottom:.5rem;">No inventory records yet.</p>
+      <p>Add products to warehouses via the admin panel.</p>
+    </div>
+    {% endif %}
+  </div>
+</body>
+</html>

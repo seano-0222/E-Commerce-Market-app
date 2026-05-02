@@ -1,0 +1,139 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Register Person | E-Commerce Market</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #e8f0fe 0%, #f3f4f6 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 16px;
+        }
+        .navbar {
+            width: 100%; max-width: 680px;
+            display: flex; justify-content: space-between; align-items: center;
+            background: #1a1a2e; border-radius: 12px;
+            padding: 14px 24px; margin-bottom: 32px;
+        }
+        .navbar .brand { color: #fff; font-size: 1rem; font-weight: 700; letter-spacing: .5px; text-decoration: none; }
+        .navbar .nav-links { display: flex; gap: 8px; }
+        .navbar .nav-links a {
+            color: #a0aec0; text-decoration: none; font-size: .82rem; font-weight: 500;
+            padding: 6px 14px; border-radius: 6px; transition: background .2s, color .2s;
+        }
+        .navbar .nav-links a:hover, .navbar .nav-links a.active { background: #007bff; color: #fff; }
+        .card {
+            width: 100%; max-width: 680px; background: #fff;
+            border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,.09); overflow: hidden;
+        }
+        .card-header { background: linear-gradient(90deg,#007bff,#0056b3); padding: 28px 32px; color: #fff; }
+        .card-header h1 { font-size: 1.6rem; font-weight: 700; margin-bottom: 4px; }
+        .card-header p  { font-size: .9rem; opacity: .88; }
+        .card-body { padding: 32px; }
+        .alert {
+            display: flex; align-items: flex-start; gap: 10px;
+            padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-size: .9rem;
+        }
+        .alert-success { background: #d1fae5; color: #065f46; border-left: 4px solid #10b981; }
+        .alert-error   { background: #fee2e2; color: #991b1b; border-left: 4px solid #ef4444; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px 24px; }
+        .form-group { display: flex; flex-direction: column; gap: 6px; }
+        .form-group.full-width { grid-column: 1 / -1; }
+        label { font-size: .82rem; font-weight: 600; color: #374151; letter-spacing: .3px; text-transform: uppercase; }
+        input[type="text"], input[type="email"], textarea, select {
+            width: 100%; padding: 10px 14px;
+            border: 1.5px solid #d1d5db; border-radius: 8px;
+            font-size: .95rem; font-family: inherit; color: #111827;
+            background: #f9fafb; transition: border-color .2s, box-shadow .2s; outline: none;
+        }
+        input:focus, textarea:focus, select:focus {
+            border-color: #007bff; box-shadow: 0 0 0 3px rgba(0,123,255,.15); background: #fff;
+        }
+        textarea { resize: vertical; min-height: 90px; }
+        .field-error { font-size: .8rem; color: #dc2626; margin-top: 2px; }
+        .btn-primary {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: linear-gradient(90deg,#007bff,#0056b3); color: #fff;
+            font-size: .95rem; font-weight: 600; padding: 12px 28px;
+            border: none; border-radius: 8px; cursor: pointer; margin-top: 28px;
+            transition: opacity .2s, transform .1s;
+        }
+        .btn-primary:hover  { opacity: .92; transform: translateY(-1px); }
+        .btn-primary:active { transform: translateY(0); }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <span class="brand">&#128722; E-Commerce Market</span>
+        <div class="nav-links">
+            <a href="{% url 'register_person' %}" class="active">Person</a>
+            <a href="{% url 'register_customer' %}">Customer</a>
+            <a href="{% url 'register_vendor' %}">Vendor</a>
+        </div>
+    </nav>
+
+    <div class="card">
+        <div class="card-header">
+            <h1>Register Person</h1>
+            <p>Create a base identity record. Then assign the person as a Customer or Vendor.</p>
+        </div>
+        <div class="card-body">
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-success">&#10003; {{ message }}</div>
+                {% endfor %}
+            {% endif %}
+
+            {% if form.non_field_errors %}
+                {% for error in form.non_field_errors %}
+                    <div class="alert alert-error">&#9888; {{ error }}</div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="post" novalidate>
+                {% csrf_token %}
+                <div class="form-grid">
+
+                    <div class="form-group">
+                        {{ form.first_name.label_tag }}
+                        {{ form.first_name }}
+                        {% for error in form.first_name.errors %}<span class="field-error">{{ error }}</span>{% endfor %}
+                    </div>
+
+                    <div class="form-group">
+                        {{ form.last_name.label_tag }}
+                        {{ form.last_name }}
+                        {% for error in form.last_name.errors %}<span class="field-error">{{ error }}</span>{% endfor %}
+                    </div>
+
+                    <div class="form-group full-width">
+                        {{ form.email.label_tag }}
+                        {{ form.email }}
+                        {% for error in form.email.errors %}<span class="field-error">{{ error }}</span>{% endfor %}
+                    </div>
+
+                    <div class="form-group full-width">
+                        {{ form.address.label_tag }}
+                        {{ form.address }}
+                        {% for error in form.address.errors %}<span class="field-error">{{ error }}</span>{% endfor %}
+                    </div>
+
+                </div>
+                <button type="submit" class="btn-primary">&#43; Register Person</button>
+            </form>
+
+        </div>
+    </div>
+
+</body>
+</html>

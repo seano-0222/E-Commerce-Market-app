@@ -1,0 +1,203 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login | E-Commerce Market</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 24px 16px;
+        }
+
+        /* ── Brand header ── */
+        .brand {
+            color: #fff;
+            font-size: 1.4rem;
+            font-weight: 800;
+            letter-spacing: .5px;
+            margin-bottom: 28px;
+            text-decoration: none;
+        }
+        .brand span { color: #4f8ef7; }
+
+        /* ── Card ── */
+        .card {
+            width: 100%;
+            max-width: 420px;
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 12px 48px rgba(0,0,0,.35);
+            overflow: hidden;
+        }
+        .card-header {
+            background: linear-gradient(90deg, #1a1a2e, #0f3460);
+            padding: 28px 32px 24px;
+            color: #fff;
+            text-align: center;
+        }
+        .card-header .lock-icon {
+            font-size: 2.4rem;
+            margin-bottom: 8px;
+        }
+        .card-header h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .card-header p {
+            font-size: .85rem;
+            color: #9ca3af;
+        }
+        .card-body { padding: 32px; }
+
+        /* ── Alert ── */
+        .alert {
+            padding: 11px 14px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: .88rem;
+            border-left: 4px solid;
+        }
+        .alert-error { background: #fee2e2; color: #991b1b; border-color: #ef4444; }
+
+        /* ── Form ── */
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 18px;
+        }
+        label {
+            font-size: .78rem;
+            font-weight: 700;
+            color: #374151;
+            letter-spacing: .4px;
+            text-transform: uppercase;
+        }
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 11px 14px;
+            border: 1.5px solid #d1d5db;
+            border-radius: 9px;
+            font-size: .95rem;
+            font-family: inherit;
+            color: #111827;
+            background: #f9fafb;
+            transition: border-color .2s, box-shadow .2s;
+            outline: none;
+        }
+        input:focus {
+            border-color: #4f8ef7;
+            box-shadow: 0 0 0 3px rgba(79,142,247,.15);
+            background: #fff;
+        }
+        .field-error { font-size: .78rem; color: #dc2626; }
+
+        /* ── Submit ── */
+        .btn-submit {
+            width: 100%;
+            padding: 13px;
+            background: linear-gradient(90deg, #4f8ef7, #1d4ed8);
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 700;
+            font-family: inherit;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 6px;
+            transition: opacity .2s, transform .1s;
+            letter-spacing: .3px;
+        }
+        .btn-submit:hover  { opacity: .9; transform: translateY(-1px); }
+        .btn-submit:active { transform: translateY(0); }
+
+        /* ── Footer link ── */
+        .card-footer {
+            padding: 16px 32px 24px;
+            text-align: center;
+            font-size: .85rem;
+            color: #6b7280;
+        }
+        .card-footer a { color: #4f8ef7; font-weight: 600; text-decoration: none; }
+        .card-footer a:hover { text-decoration: underline; }
+
+        /* ── Divider ── */
+        .divider {
+            border: none;
+            border-top: 1px solid #e5e7eb;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <a href="{% url 'index' %}" class="brand">&#128722; E-Commerce <span>Market</span></a>
+
+    <div class="card">
+
+        <!-- Header -->
+        <div class="card-header">
+            <div class="lock-icon">&#128274;</div>
+            <h1>Welcome Back</h1>
+            <p>Sign in to access your account</p>
+        </div>
+
+        <!-- Body -->
+        <div class="card-body">
+
+            <!-- Non-field errors (wrong username/password) -->
+            {% if form.non_field_errors %}
+                {% for error in form.non_field_errors %}
+                    <div class="alert alert-error">&#9888; {{ error }}</div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="post" novalidate>
+                {% csrf_token %}
+
+                <!-- Username field -->
+                <div class="form-group">
+                    {{ form.username.label_tag }}
+                    {{ form.username }}
+                    {% for error in form.username.errors %}
+                        <span class="field-error">{{ error }}</span>
+                    {% endfor %}
+                </div>
+
+                <!-- Password field -->
+                <div class="form-group">
+                    {{ form.password.label_tag }}
+                    {{ form.password }}
+                    {% for error in form.password.errors %}
+                        <span class="field-error">{{ error }}</span>
+                    {% endfor %}
+                </div>
+
+                <button type="submit" class="btn-submit">Sign In &rarr;</button>
+            </form>
+        </div>
+
+        <!-- Footer -->
+        <hr class="divider" style="margin:0;" />
+        <div class="card-footer">
+            Don't have an account?
+            <a href="{% url 'register_person' %}">Register here</a>
+        </div>
+
+    </div>
+
+</body>
+</html>
