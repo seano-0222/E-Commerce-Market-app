@@ -1,10 +1,5 @@
 from django.db import models
-
-class Platform(models.Model):
-    name = models.CharField(max_length=100)
-    description = models.TextField(blank=True)
-    def __str__(self):
-        return self.name
+from platforms.models import Platform
 
 class Order(models.Model):
     customer = models.ForeignKey('accounts.Customer', on_delete=models.CASCADE)
