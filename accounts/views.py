@@ -15,6 +15,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
+from django.urls import reverse
 
 from .forms import PersonForm, CustomerForm, VendorForm
 
@@ -77,23 +78,22 @@ def register_person(request):
     After a successful registration the user is redirected back to this page
     so they can continue by registering the person as a Customer or Vendor.
     """
+
     if request.method == 'POST':
         form = PersonForm(request.POST)
-
         if form.is_valid():
             person = form.save()
             messages.success(
                 request,
-                f"Person '{person.first_name} {person.last_name}' "
-                "was registered successfully. "
-                "You can now assign them as a Customer or Vendor."
+                f"Person '{person.first_name} {person.last_name}' registered! "
+                "Now assign them as a Customer or Vendor."
             )
-            # PRG redirect — prevents duplicate submission on browser refresh
-            return redirect('register_person')
+            # Redirect to customer registration with person pre-selected
+            return redirect(
+                reverse('register_customer') + f'?person={person.person_id}'
+            )
     else:
-        # GET request — show an empty form
         form = PersonForm()
-
     return render(request, 'accounts/person_register.html', {'form': form})
 
 
@@ -108,18 +108,22 @@ def register_customer(request):
     Validation (in CustomerForm.clean) blocks the action if the selected
     Person is already a Vendor, enforcing the exclusive subtype rule.
     """
+
     if request.method == 'POST':
         form = CustomerForm(request.POST)
-
         if form.is_valid():
             customer = form.save()
             messages.success(
                 request,
                 f"'{customer.person}' has been registered as a Customer."
             )
-            return redirect('register_customer')
+            return redirect('login')
     else:
-        form = CustomerForm()
+        initial = {}
+        person_id = request.GET.get('person')
+        if person_id:
+            initial['person'] = person_id
+        form = CustomerForm(initial=initial)
 
     return render(request, 'accounts/customer_register.html', {'form': form})
 
@@ -137,7 +141,6 @@ def register_vendor(request):
     """
     if request.method == 'POST':
         form = VendorForm(request.POST)
-
         if form.is_valid():
             vendor = form.save()
             messages.success(
@@ -145,8 +148,11 @@ def register_vendor(request):
                 f"'{vendor.person}' has been registered as a Vendor "
                 f"with store '{vendor.store_name}'."
             )
-            return redirect('register_vendor')
+            return redirect('login')  # done — send them to login
     else:
-        form = VendorForm()
-
+        initial = {}
+        person_id = request.GET.get('person')
+        if person_id:
+            initial['person'] = person_id
+        form = VendorForm(initial=initial)
     return render(request, 'accounts/vendor_register.html', {'form': form})

@@ -48,7 +48,7 @@
         .form-group { display: flex; flex-direction: column; gap: 6px; }
         .form-group.full-width { grid-column: 1 / -1; }
         label { font-size: .82rem; font-weight: 600; color: #374151; letter-spacing: .3px; text-transform: uppercase; }
-        input[type="text"], input[type="email"], textarea, select {
+        input[type="text"], input[type="email"], input[type="password"], textarea, select {
             width: 100%; padding: 10px 14px;
             border: 1.5px solid #d1d5db; border-radius: 8px;
             font-size: .95rem; font-family: inherit; color: #111827;
@@ -92,12 +92,16 @@
                 {% for message in messages %}
                     <div class="alert alert-success">&#10003; {{ message }}</div>
                 {% endfor %}
-            {% endif %}
-
-            {% if form.non_field_errors %}
-                {% for error in form.non_field_errors %}
-                    <div class="alert alert-error">&#9888; {{ error }}</div>
-                {% endfor %}
+                <div style="display:flex; gap:12px; margin-bottom:24px;">
+                    <a href="{% url 'register_customer' %}"
+                       style="flex:1; text-align:center; padding:12px; background:#28a745; color:#fff; border-radius:8px; font-weight:600; text-decoration:none;">
+                        &#128704; Register as Customer
+                    </a>
+                    <a href="{% url 'register_vendor' %}"
+                       style="flex:1; text-align:center; padding:12px; background:#fd7e14; color:#fff; border-radius:8px; font-weight:600; text-decoration:none;">
+                        &#127978; Register as Vendor
+                    </a>
+                </div>
             {% endif %}
 
             <form method="post" novalidate>
@@ -126,6 +130,24 @@
                         {{ form.address.label_tag }}
                         {{ form.address }}
                         {% for error in form.address.errors %}<span class="field-error">{{ error }}</span>{% endfor %}
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="id_username">Username</label>
+                        {{ form.username }}
+                        {% for error in form.username.errors %}<span class="field-error">{{ error }}</span>{% endfor %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="id_password">Password</label>
+                        {{ form.password }}
+                        {% for error in form.password.errors %}<span class="field-error">{{ error }}</span>{% endfor %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="id_password2">Confirm Password</label>
+                        {{ form.password2 }}
+                        {% for error in form.password2.errors %}<span class="field-error">{{ error }}</span>{% endfor %}
                     </div>
 
                 </div>
