@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import Order, Platform
-from .forms import OrderForm, PlatformForm
+from .models import Order, Platform, OrderItem, Payment, Shipment
+from .forms import OrderForm, PlatformForm, OrderItemForm, PaymentForm, ShipmentForm
 
 @login_required
 def order_list(request):
@@ -34,6 +34,39 @@ def add_new_platform(request):
     else:
         form = PlatformForm()
     return render(request, 'orders/addNewPlatform.html', {'form': form})
+
+@login_required
+def add_new_order_item(request):
+    if request.method == 'POST':
+        form = OrderItemForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('order_list')
+    else:
+        form = OrderItemForm()
+    return render(request, 'orders/addNewOrderItem.html', {'form': form})
+
+@login_required
+def add_new_payment(request):
+    if request.method == 'POST':
+        form = PaymentForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('order_list')
+    else:
+        form = PaymentForm()
+    return render(request, 'orders/addNewPayment.html', {'form': form})
+
+@login_required
+def add_new_shipment(request):
+    if request.method == 'POST':
+        form = ShipmentForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('order_list')
+    else:
+        form = ShipmentForm()
+    return render(request, 'orders/addNewShipment.html', {'form': form})
 
 @login_required
 def edit_profile(request):
