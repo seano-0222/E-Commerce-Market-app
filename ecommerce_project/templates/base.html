@@ -4,24 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>E-Commerce Platform | {% block title %}Home{% endblock %}</title>
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
     <style>
-        *, *::before, *::after {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Inter', sans-serif;
             background: #0f0f1a;
             color: #e5e7eb;
-            line-height: 1.6;
             min-height: 100vh;
+            line-height: 1.6;
         }
 
-        /* Navbar */
         .navbar {
             background: #1a1a2e;
             padding: 14px 40px;
@@ -31,40 +28,30 @@
             position: sticky;
             top: 0;
             z-index: 100;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.25);
             border-bottom: 1px solid rgba(255,255,255,0.05);
         }
 
-        .navbar .brand {
+        .brand {
             color: #fff;
-            font-size: 1.2rem;
             font-weight: 800;
-            letter-spacing: .5px;
             text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            font-size: 1.2rem;
         }
 
-        .navbar .brand span {
-            color: #4f8ef7;
-        }
+        .brand span { color: #4f8ef7; }
 
         .nav-links {
             display: flex;
-            gap: 12px;
+            gap: 10px;
             align-items: center;
-            flex-wrap: wrap;
         }
 
         .nav-link {
             color: #d1d5db;
             text-decoration: none;
-            padding: 8px 16px;
+            padding: 8px 14px;
             border-radius: 8px;
             font-size: 0.85rem;
-            font-weight: 500;
-            transition: all 0.2s;
         }
 
         .nav-link:hover {
@@ -72,162 +59,86 @@
             color: #4f8ef7;
         }
 
+        .btn-login { background: #4f8ef7; color: white; }
+        .btn-logout { background: rgba(239,68,68,0.15); color: #ef4444; }
+
         .user-welcome {
-            color: #9ca3af;
             font-size: 0.85rem;
-            margin-right: 8px;
+            color: #9ca3af;
         }
 
-        .btn-logout {
-            background: rgba(239, 68, 68, 0.1);
-            color: #ef4444;
-            border: 1px solid rgba(239, 68, 68, 0.3);
-        }
-
-        .btn-logout:hover {
-            background: rgba(239, 68, 68, 0.2);
-            color: #ef4444;
-        }
-
-        .btn-login {
-            background: #4f8ef7;
-            color: #fff;
-        }
-
-        .btn-login:hover {
-            background: #3b7ae8;
-            color: #fff;
-        }
-
-        /* Main Container */
         .main-container {
             min-height: calc(100vh - 130px);
         }
 
-        /* Messages */
         .messages {
-            max-width: 1200px;
-            margin: 20px auto 0;
+            max-width: 1100px;
+            margin: 20px auto;
             padding: 0 20px;
         }
 
         .message {
-            padding: 14px 20px;
-            margin-bottom: 12px;
-            border-radius: 10px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            backdrop-filter: blur(10px);
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 10px;
         }
 
-        .message.success {
-            background: rgba(16, 185, 129, 0.1);
-            color: #10b981;
-            border: 1px solid rgba(16, 185, 129, 0.3);
-        }
+        .message.success { background: rgba(16,185,129,0.1); color: #10b981; }
+        .message.error { background: rgba(239,68,68,0.1); color: #ef4444; }
 
-        .message.error {
-            background: rgba(239, 68, 68, 0.1);
-            color: #ef4444;
-            border: 1px solid rgba(239, 68, 68, 0.3);
-        }
-
-        .message.info {
-            background: rgba(79, 142, 247, 0.1);
-            color: #4f8ef7;
-            border: 1px solid rgba(79, 142, 247, 0.3);
-        }
-
-        .message.warning {
-            background: rgba(245, 158, 11, 0.1);
-            color: #f59e0b;
-            border: 1px solid rgba(245, 158, 11, 0.3);
-        }
-
-        /* Footer */
         footer {
+            text-align: center;
+            padding: 20px;
             background: #1a1a2e;
             color: #6b7280;
-            text-align: center;
-            padding: 24px;
-            font-size: 0.82rem;
             margin-top: 40px;
-            border-top: 1px solid rgba(255,255,255,0.05);
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .navbar {
-                padding: 14px 20px;
-                flex-direction: column;
-                gap: 12px;
-            }
-
-            .nav-links {
-                justify-content: center;
-            }
-
-            .navbar .brand {
-                font-size: 1rem;
-            }
-
-            .nav-link {
-                padding: 6px 12px;
-                font-size: 0.75rem;
-            }
-
-            .user-welcome {
-                font-size: 0.75rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .nav-links {
-                gap: 8px;
-            }
-
-            .nav-link {
-                padding: 5px 10px;
-                font-size: 0.7rem;
-            }
         }
     </style>
+
     {% block extra_css %}{% endblock %}
 </head>
+
 <body>
-    <nav class="navbar">
-        <a href="{% url 'index' %}" class="brand">
-            🛍️ E-Commerce <span>Platform</span>
-        </a>
-        <div class="nav-links">
-            <a href="{% url 'index' %}" class="nav-link">🏠 Home</a>
-            <a href="{% url 'categories:category_list' %}" class="nav-link">📂 Categories</a>
-            <a href="{% url 'products:product_list' %}" class="nav-link">🛍️ Products</a>
-            {% if user.is_authenticated %}
-                <span class="user-welcome">👋 Hi, {{ user.username }}!</span>
-                <a href="{% url 'logout' %}" class="nav-link btn-logout">🚪 Logout</a>
-            {% else %}
-                <a href="{% url 'login' %}" class="nav-link btn-login">🔑 Login</a>
-            {% endif %}
-        </div>
-    </nav>
 
-    <div class="main-container">
-        {% if messages %}
-            <div class="messages">
-                {% for message in messages %}
-                    <div class="message {{ message.tags }}">{{ message }}</div>
-                {% endfor %}
-            </div>
+<nav class="navbar">
+    <a href="{% url 'index' %}" class="brand">🛍️ E-Commerce <span>Platform</span></a>
+
+    <div class="nav-links">
+        <a href="{% url 'index' %}" class="nav-link">Home</a>
+        <a href="{% url 'categories:category_list' %}" class="nav-link">Categories</a>
+        <a href="{% url 'products:product_list' %}" class="nav-link">Products</a>
+
+        {% if user.is_authenticated %}
+            <span class="user-welcome">Hi, {{ user.username }}</span>
+
+            <!-- FIXED: use accounts namespace -->
+            <a href="{% url 'accounts:edit_profile' %}" class="nav-link">Profile</a>
+            <a href="{% url 'accounts:logout' %}" class="nav-link btn-logout">Logout</a>
+
+        {% else %}
+            <a href="{% url 'accounts:login' %}" class="nav-link btn-login">Login</a>
+            <a href="{% url 'accounts:register' %}" class="nav-link">Register</a>
         {% endif %}
-
-        {% block content %}{% endblock %}
     </div>
+</nav>
 
-    <footer>
-        <p>&copy; 2024 E-Commerce Platform. All rights reserved. | Built with Django</p>
-    </footer>
+<div class="main-container">
 
-    {% block extra_js %}{% endblock %}
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="message {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% block content %}{% endblock %}
+</div>
+
+<footer>
+    © 2026 E-Commerce Platform | Django Project
+</footer>
+
+{% block extra_js %}{% endblock %}
 </body>
 </html>
