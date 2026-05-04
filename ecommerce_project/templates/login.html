@@ -55,26 +55,10 @@
             </div>
         </form>
 
-        <!-- Demo Credentials (Only show for non-authenticated users) -->
-        {% if not user.is_authenticated %}
-            <div class="demo-credentials">
-                <div class="demo-header">
-                    <span class="demo-icon">ℹ️</span>
-                    <h3>Demo Credentials</h3>
-                </div>
-                <div class="demo-content">
-                    <div class="credential-row">
-                        <span class="credential-label">Username:</span>
-                        <span class="credential-value">admin</span>
-                    </div>
-                    <div class="credential-row">
-                        <span class="credential-label">Password:</span>
-                        <span class="credential-value">[the password you set]</span>
-                    </div>
-                </div>
-                <p class="demo-note">Use these credentials to test the platform</p>
-            </div>
-        {% endif %}
+        <!-- Register Link -->
+        <div class="register-link">
+            <p>Don't have an account? <a href="{% url 'accounts:register' %}" class="register-link-btn">Create Account →</a></p>
+        </div>
 
         <!-- Help Links -->
         <div class="help-links">
@@ -257,68 +241,34 @@
         transform: translateY(0);
     }
 
-    /* Demo Credentials */
-    .demo-credentials {
-        margin: 0 32px 32px 32px;
-        background: #0f0f1a;
-        border-radius: 12px;
-        padding: 20px;
-        border: 1px solid rgba(79, 142, 247, 0.2);
-        border-left: 4px solid #4f8ef7;
+    /* Register Link */
+    .register-link {
+        padding: 0 32px 24px 32px;
+        text-align: center;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
     }
 
-    .demo-header {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        margin-bottom: 16px;
-    }
-
-    .demo-icon {
-        font-size: 1.2rem;
-    }
-
-    .demo-header h3 {
-        color: #4f8ef7;
-        font-size: 1rem;
-        font-weight: 600;
-        margin: 0;
-    }
-
-    .demo-content {
-        margin-bottom: 12px;
-    }
-
-    .credential-row {
-        display: flex;
-        gap: 12px;
-        margin-bottom: 8px;
+    .register-link p {
+        color: #9ca3af;
         font-size: 0.9rem;
     }
 
-    .credential-label {
-        color: #9ca3af;
+    .register-link-btn {
+        color: #10b981;
+        text-decoration: none;
         font-weight: 600;
-        min-width: 80px;
+        transition: color 0.2s;
     }
 
-    .credential-value {
-        color: #d1d5db;
-        font-family: monospace;
-    }
-
-    .demo-note {
-        color: #6b7280;
-        font-size: 0.75rem;
-        margin-top: 12px;
-        font-style: italic;
+    .register-link-btn:hover {
+        color: #059669;
+        text-decoration: underline;
     }
 
     /* Help Links */
     .help-links {
         padding: 24px 32px 32px;
         text-align: center;
-        border-top: 1px solid rgba(255,255,255,0.08);
         display: flex;
         justify-content: center;
         gap: 12px;
@@ -362,8 +312,8 @@
             padding: 24px;
         }
 
-        .demo-credentials {
-            margin: 0 24px 24px 24px;
+        .register-link {
+            padding: 0 24px 20px 24px;
         }
 
         .help-links {
@@ -387,15 +337,6 @@
         .form-input {
             font-size: 0.85rem;
             padding: 10px 14px;
-        }
-
-        .credential-row {
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .credential-label {
-            min-width: auto;
         }
 
         .help-links {
