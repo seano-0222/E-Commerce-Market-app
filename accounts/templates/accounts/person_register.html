@@ -123,6 +123,18 @@
                     </div>
 
                     <div class="form-group full-width">
+                        {{ form.password.label_tag }}
+                        {{ form.password }}
+                        {% for error in form.password.errors %}<span class="field-error">{{ error }}</span>{% endfor %}
+                    </div>
+
+                    <div class="form-group full-width">
+                        {{ form.confirm_password.label_tag }}
+                        {{ form.confirm_password }}
+                        {% for error in form.confirm_password.errors %}<span class="field-error">{{ error }}</span>{% endfor %}
+                    </div>
+
+                    <div class="form-group full-width">
                         {{ form.address.label_tag }}
                         {{ form.address }}
                         {% for error in form.address.errors %}<span class="field-error">{{ error }}</span>{% endfor %}

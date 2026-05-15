@@ -5,6 +5,12 @@
 </head>
 <body>
 
+<nav style="padding:16px;background:#1a1a2e;display:flex;gap:12px;align-items:center;">
+    <a href="{% url 'index' %}" style="color:#fff;text-decoration:none;">Home</a>
+    <a href="{% url 'edit_profile' %}" style="color:#fff;text-decoration:none;">Edit Profile</a>
+    <a href="{% url 'logout' %}" style="color:#fff;text-decoration:none;">Logout</a>
+</nav>
+
 <h2>Add New Cart</h2>
 
 <form method="POST">
@@ -13,7 +19,7 @@
     <button type="submit">Save</button>
 </form>
 
-<a href="/">Back to Home</a>
+<a href="{% url 'index' %}">Back to Home</a>
 
 </body>
 </html>

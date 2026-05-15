@@ -21,6 +21,7 @@ urlpatterns = [
     # Authentication
     path('login/',             views.login_view,        name='login'),
     path('logout/',            views.logout_view,       name='logout'),
+    path('edit-profile/',      views.edit_profile,      name='edit_profile'),
 
     # Step 1 — create the base Person identity record
     path('register/person/',   views.register_person,   name='register_person'),

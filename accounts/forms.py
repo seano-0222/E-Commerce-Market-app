@@ -12,6 +12,8 @@ the data ever reaches the database.
 """
 
 from django import forms
+from django.contrib.auth.models import User
+from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 
 from .models import Person, Customer, Vendor
@@ -27,7 +29,13 @@ class PersonForm(forms.ModelForm):
 
     The Person record must be created BEFORE assigning them as a
     Customer or Vendor (the other two forms select an existing Person).
+
+    The form also collects a password so a linked Django auth user
+    can be created at the same time.
     """
+
+    password = forms.CharField(widget=forms.PasswordInput, label='Password')
+    confirm_password = forms.CharField(widget=forms.PasswordInput, label='Confirm Password')
 
     class Meta:
         model  = Person
@@ -42,6 +50,31 @@ class PersonForm(forms.ModelForm):
             'email':      'Email Address',
             'address':    'Address',
         }
+
+
+class EditPersonForm(forms.ModelForm):
+    """
+    Form for editing a logged-in Person's profile details.
+    """
+
+    class Meta:
+        model  = Person
+        fields = ['first_name', 'last_name', 'email', 'address']
+        widgets = {
+            'address': forms.Textarea(attrs={'rows': 3}),
+        }
+        labels = {
+            'first_name': 'First Name',
+            'last_name':  'Last Name',
+            'email':      'Email Address',
+            'address':    'Address',
+        }
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if Person.objects.filter(email=email).exclude(pk=self.instance.pk).exists():
+            raise ValidationError('A Person with that email already exists.')
+        return email
 
 
 # ---------------------------------------------------------------------------

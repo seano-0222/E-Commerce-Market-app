@@ -90,7 +90,12 @@
 
     <nav class="navbar">
         <a href="{% url 'index' %}" class="brand">&#128722; E-Commerce <span>Market</span></a>
-        <a href="{% url 'index' %}" class="back">&#8592; Back to Home</a>
+        <div>
+            <a href="{% url 'edit_profile' %}" class="back">Edit Profile</a>
+            <a href="{% url 'add_new_cart' %}" class="back">New Cart</a>
+            <a href="{% url 'logout' %}" class="back">Logout</a>
+            <a href="{% url 'index' %}" class="back">&#8592; Home</a>
+        </div>
     </nav>
 
     <div class="page">

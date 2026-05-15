@@ -11,11 +11,13 @@ URL → View mapping:
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 
-from accounts.models import Customer
+from accounts.models import Customer, Person
 from products.models import Product
 from .models import Cart, CartItem
 from .forms import CartForm  
+from django.contrib.auth.decorators import login_required
 
+@login_required(login_url='/login/')
 def add_new_cart(request):
     """
     Add a new Cart record using a form (for lab requirement).
@@ -38,10 +40,22 @@ def _get_or_create_cart(customer):
     return cart
 
 
+def _get_customer_for_user(user):
+    """Return the Customer object for the logged-in user, if one exists."""
+    if not user or not user.is_authenticated:
+        return None
+
+    person = Person.objects.filter(email=user.email).first()
+    if not person:
+        return None
+
+    return getattr(person, 'customer', None)
+
+
 # ---------------------------------------------------------------------------
 # View: view_cart
 # ---------------------------------------------------------------------------
-
+@login_required(login_url='/login/')
 def view_cart(request):
     """
     Display all items currently in the customer's cart.
@@ -50,9 +64,9 @@ def view_cart(request):
     'logged-in' customer. Once the login system is integrated this
     will use request.user → Customer lookup.
     """
-    customer = Customer.objects.first()
+    customer = _get_customer_for_user(request.user)
     if not customer:
-        messages.error(request, 'No customers exist yet. Please register a customer first.')
+        messages.error(request, 'No customer profile exists for your account. Please register as a Customer first.')
         return render(request, 'cart/cart.html', {'cart': None, 'items': []})
 
     cart  = _get_or_create_cart(customer)
@@ -74,9 +88,9 @@ def add_to_cart(request, product_id):
 
     If the product is already in the cart, increment the quantity by 1.
     """
-    customer = Customer.objects.first()
+    customer = _get_customer_for_user(request.user)
     if not customer:
-        messages.error(request, 'No customers exist yet.')
+        messages.error(request, 'No customer profile exists for your account. Please register as a Customer first.')
         return redirect('view_cart')
 
     product = get_object_or_404(Product, pk=product_id)
@@ -107,7 +121,12 @@ def add_to_cart(request, product_id):
 
 def remove_from_cart(request, item_id):
     """Remove a single CartItem from the cart."""
-    cart_item = get_object_or_404(CartItem, pk=item_id)
+    customer = _get_customer_for_user(request.user)
+    if not customer:
+        messages.error(request, 'No customer profile exists for your account. Please register as a Customer first.')
+        return redirect('view_cart')
+
+    cart_item = get_object_or_404(CartItem, pk=item_id, cart__customer=customer)
     product_name = cart_item.product.name
     cart_item.delete()
     messages.success(request, f'"{product_name}" removed from your cart.')
@@ -120,10 +139,12 @@ def remove_from_cart(request, item_id):
 
 def clear_cart(request):
     """Remove all items from the current customer's cart."""
-    customer = Customer.objects.first()
+    customer = _get_customer_for_user(request.user)
     if customer:
         cart = _get_or_create_cart(customer)
         cart.items.all().delete()
         messages.success(request, 'Your cart has been cleared.')
+    else:
+        messages.error(request, 'No customer profile exists for your account. Please register as a Customer first.')
     return redirect('view_cart')
 
