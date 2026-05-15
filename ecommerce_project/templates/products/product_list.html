@@ -48,7 +48,7 @@
                             <span class="category-badge">{{ product.category.name }}</span>
                         </div>
                         <div class="product-meta">
-                            <span class="product-price">${{ product.price }}</span>
+                            <span class="product-price">₱{{ product.price }}</span>
                             <span class="product-stock {% if product.stock_qty <= 0 %}out-of-stock{% else %}in-stock{% endif %}">
                                 {% if product.stock_qty > 0 %}Stock: {{ product.stock_qty }}{% else %}Out of Stock{% endif %}
                             </span>

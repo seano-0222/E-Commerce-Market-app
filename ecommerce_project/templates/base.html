@@ -104,20 +104,14 @@
     <a href="{% url 'index' %}" class="brand">🛍️ E-Commerce <span>Platform</span></a>
 
     <div class="nav-links">
-        <a href="{% url 'index' %}" class="nav-link">Home</a>
-        <a href="{% url 'categories:category_list' %}" class="nav-link">Categories</a>
-        <a href="{% url 'products:product_list' %}" class="nav-link">Products</a>
-
+        <a href="{% url 'index' %}" class="nav-link">🏠 Home</a>
+        <a href="{% url 'categories:category_list' %}" class="nav-link">📂 Categories</a>
+        <a href="{% url 'products:product_list' %}" class="nav-link">🛍️ Products</a>
+        <a href="{% url 'accounts:vendor_profile' %}" class="nav-link">👤 Profile</a>
         {% if user.is_authenticated %}
-            <span class="user-welcome">Hi, {{ user.username }}</span>
-
-            <!-- FIXED: use accounts namespace -->
-            <a href="{% url 'accounts:edit_profile' %}" class="nav-link">Profile</a>
-            <a href="{% url 'accounts:logout' %}" class="nav-link btn-logout">Logout</a>
-
+            <a href="{% url 'logout' %}" class="nav-link btn-logout">🚪 Logout</a>
         {% else %}
-            <a href="{% url 'accounts:login' %}" class="nav-link btn-login">Login</a>
-            <a href="{% url 'accounts:register' %}" class="nav-link">Register</a>
+            <a href="{% url 'login' %}" class="nav-link btn-login">🔑 Login</a>
         {% endif %}
     </div>
 </nav>

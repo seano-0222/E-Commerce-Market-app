@@ -1,0 +1,553 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="hero">
+    <div class="hero-content">
+        <div class="profile-icon-large">
+            👤
+        </div>
+        <h1>{{ vendor.user.username }}</h1>
+        {% if vendor.bio %}
+            <p class="hero-bio">{{ vendor.bio }}</p>
+        {% else %}
+            <p class="hero-bio text-muted">No bio added yet</p>
+        {% endif %}
+    </div>
+</section>
+
+<div class="profile-section">
+    <div class="profile-container">
+        <!-- Small Stats Row (subtle) -->
+        <div class="stats-row-wrapper">
+            <div class="stats-row">
+                <div class="stat-item">
+                    <span class="stat-number-small">{{ total_products }}</span>
+                    <span class="stat-label-small">Products</span>
+                </div>
+                <div class="stat-divider">|</div>
+                <div class="stat-item">
+                    <span class="stat-number-small">{{ total_reviews }}</span>
+                    <span class="stat-label-small">Reviews</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="profile-details-wrapper">
+            <div class="profile-details">
+                <div class="detail-item">
+                    <span class="detail-label">Email:</span>
+                    <span class="detail-value">{{ vendor.user.email|default:"Not provided" }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Contact:</span>
+                    <span class="detail-value">{{ vendor.contact_number|default:"Not provided" }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Store:</span>
+                    <span class="detail-value">{{ vendor.store_name }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Trust Score:</span>
+                    <span class="detail-value trust-score">{{ vendor.vendor_trust_score }}/5.0</span>
+                </div>
+            </div>
+            <a href="{% url 'accounts:edit_profile' %}" class="btn-edit-profile">✏️ Edit Profile</a>
+        </div>
+
+        <!-- Products Section -->
+        <div class="products-section">
+            <div class="section-header">
+                <h3>📦 My Products</h3>
+                <a href="{% url 'products:add_product' %}" class="btn-add-small">+ Add Product</a>
+            </div>
+
+            <div class="product-grid-mini">
+                {% for product in products %}
+                    <div class="product-mini-card">
+                        <div class="product-mini-info">
+                            <h4>{{ product.name }}</h4>
+                            <div class="product-mini-meta">
+                                <span class="product-mini-price">${{ product.price }}</span>
+                                <span class="product-mini-stock">Stock: {{ product.stock_qty }}</span>
+                            </div>
+                        </div>
+                        <div class="product-mini-actions">
+                            <a href="{% url 'products:update_product' product.product_id %}" class="btn-edit">Edit</a>
+                            <a href="{% url 'products:delete_product' product.product_id %}" class="btn-delete">Delete</a>
+                        </div>
+                    </div>
+                {% empty %}
+                    <div class="empty-message">
+                        <span class="empty-icon">📭</span>
+                        <p>No products yet.</p>
+                        <a href="{% url 'products:add_product' %}" class="btn-add-first">Add your first product →</a>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Reviews Section -->
+        <div class="reviews-section">
+            <div class="section-header">
+                <h3>⭐ Customer Reviews</h3>
+            </div>
+
+            <div class="reviews-list">
+                {% for review in reviews %}
+                    <div class="review-mini-card">
+                        <div class="review-header">
+                            <strong>{{ review.customer.username }}</strong>
+                            <span class="rating">⭐ {{ review.rating }}/5</span>
+                        </div>
+                        <p class="review-product">on {{ review.product.name }}</p>
+                        <p class="review-comment">{{ review.comment|truncatewords:20 }}</p>
+                        <small class="review-date">{{ review.review_date|date:"F j, Y" }}</small>
+                    </div>
+                {% empty %}
+                    <div class="empty-message">
+                        <span class="empty-icon">💬</span>
+                        <p>No reviews yet for your products.</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Hero Section - Centered with profile icon, username, and bio */
+    .hero {
+        background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 60%, #0f3460 100%);
+        padding: 60px 40px;
+        text-align: center;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .hero-content {
+        max-width: 800px;
+        margin: 0 auto;
+        text-align: center;
+    }
+
+    .profile-icon-large {
+        font-size: 5rem;
+        margin-bottom: 20px;
+        display: inline-block;
+    }
+
+    .hero h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 12px;
+        color: #fff;
+    }
+
+    .hero-bio {
+        font-size: 1rem;
+        color: #9ca3af;
+        margin: 0 auto;
+        max-width: 500px;
+    }
+
+    .text-muted {
+        color: #6b7280;
+        font-style: italic;
+    }
+
+    .profile-section {
+        max-width: 1000px;
+        margin: 40px auto;
+        padding: 0 20px;
+    }
+
+    .profile-container {
+        background: #1a1a2e;
+        border-radius: 20px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        overflow: hidden;
+        border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    /* Stats Row */
+    .stats-row-wrapper {
+        padding: 32px 32px 0 32px;
+    }
+
+    .stats-row {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 16px;
+        padding: 8px 16px;
+        background: rgba(255,255,255,0.03);
+        border-radius: 40px;
+        display: inline-flex;
+        width: auto;
+        margin: 0 auto;
+    }
+
+    .stat-item {
+        display: flex;
+        align-items: baseline;
+        gap: 6px;
+    }
+
+    .stat-number-small {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #9ca3af;
+    }
+
+    .stat-label-small {
+        font-size: 0.8rem;
+        color: #6b7280;
+    }
+
+    .stat-divider {
+        color: #374151;
+        font-size: 0.8rem;
+    }
+
+    /* Profile Details */
+    .profile-details-wrapper {
+        padding: 24px 32px 32px 32px;
+    }
+
+    .profile-details {
+        text-align: left;
+        max-width: 400px;
+        margin: 0 auto 24px;
+        padding: 20px;
+        background: #0f0f1a;
+        border-radius: 12px;
+        border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .detail-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .detail-item:last-child {
+        margin-bottom: 0;
+        padding-bottom: 0;
+        border-bottom: none;
+    }
+
+    .detail-label {
+        color: #6b7280;
+        font-size: 0.85rem;
+        font-weight: 500;
+    }
+
+    .detail-value {
+        color: #fff;
+        font-size: 0.85rem;
+    }
+
+    .trust-score {
+        color: #fbbf24;
+        font-weight: 600;
+    }
+
+    .btn-edit-profile {
+        display: block;
+        width: fit-content;
+        margin: 0 auto;
+        padding: 10px 28px;
+        background: linear-gradient(135deg, #4f8ef7, #8b5cf6);
+        color: #fff;
+        text-decoration: none;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        transition: all 0.2s;
+        font-weight: 600;
+    }
+
+    .btn-edit-profile:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(79, 142, 247, 0.3);
+    }
+
+    /* Products Section */
+    .products-section, .reviews-section {
+        padding: 32px;
+        border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .section-header h3 {
+        color: #fff;
+        font-size: 1.2rem;
+        font-weight: 600;
+    }
+
+    .btn-add-small {
+        padding: 8px 16px;
+        background: #10b981;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 6px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        transition: all 0.2s;
+    }
+
+    .btn-add-small:hover {
+        background: #059669;
+        transform: translateY(-1px);
+    }
+
+    /* Product Cards */
+    .product-grid-mini {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .product-mini-card {
+        background: #0f0f1a;
+        border-radius: 12px;
+        padding: 16px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border: 1px solid rgba(255,255,255,0.08);
+        transition: all 0.2s;
+    }
+
+    .product-mini-card:hover {
+        border-color: rgba(79, 142, 247, 0.3);
+        background: #13131f;
+    }
+
+    .product-mini-info h4 {
+        color: #fff;
+        margin-bottom: 8px;
+        font-size: 1rem;
+    }
+
+    .product-mini-meta {
+        display: flex;
+        gap: 16px;
+        align-items: center;
+    }
+
+    .product-mini-price {
+        color: #4f8ef7;
+        font-weight: 700;
+        font-size: 0.9rem;
+    }
+
+    .product-mini-stock {
+        color: #9ca3af;
+        font-size: 0.75rem;
+    }
+
+    .product-mini-actions {
+        display: flex;
+        gap: 8px;
+    }
+
+    .btn-edit, .btn-delete {
+        padding: 6px 14px;
+        text-decoration: none;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        transition: all 0.2s;
+    }
+
+    .btn-edit {
+        background: rgba(79, 142, 247, 0.15);
+        color: #4f8ef7;
+        border: 1px solid rgba(79, 142, 247, 0.2);
+    }
+
+    .btn-edit:hover {
+        background: rgba(79, 142, 247, 0.25);
+    }
+
+    .btn-delete {
+        background: rgba(239, 68, 68, 0.15);
+        color: #ef4444;
+        border: 1px solid rgba(239, 68, 68, 0.2);
+    }
+
+    .btn-delete:hover {
+        background: rgba(239, 68, 68, 0.25);
+    }
+
+    /* Review Cards */
+    .reviews-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .review-mini-card {
+        background: #0f0f1a;
+        border-radius: 12px;
+        padding: 16px 20px;
+        border: 1px solid rgba(255,255,255,0.08);
+        transition: all 0.2s;
+    }
+
+    .review-mini-card:hover {
+        border-color: rgba(79, 142, 247, 0.2);
+    }
+
+    .review-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .review-header strong {
+        color: #fff;
+        font-size: 0.9rem;
+    }
+
+    .rating {
+        color: #fbbf24;
+        font-size: 0.8rem;
+    }
+
+    .review-product {
+        color: #4f8ef7;
+        font-size: 0.8rem;
+        margin-bottom: 8px;
+    }
+
+    .review-comment {
+        color: #d1d5db;
+        font-size: 0.85rem;
+        line-height: 1.5;
+        margin-bottom: 8px;
+    }
+
+    .review-date {
+        color: #6b7280;
+        font-size: 0.7rem;
+    }
+
+    /* Empty State */
+    .empty-message {
+        text-align: center;
+        padding: 48px 20px;
+        color: #9ca3af;
+    }
+
+    .empty-icon {
+        font-size: 3rem;
+        display: block;
+        margin-bottom: 16px;
+        opacity: 0.5;
+    }
+
+    .btn-add-first {
+        display: inline-block;
+        margin-top: 16px;
+        padding: 8px 20px;
+        background: linear-gradient(135deg, #4f8ef7, #8b5cf6);
+        color: #fff;
+        text-decoration: none;
+        border-radius: 6px;
+        font-size: 0.85rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .hero {
+            padding: 40px 20px;
+        }
+
+        .profile-icon-large {
+            font-size: 4rem;
+        }
+
+        .hero h1 {
+            font-size: 2rem;
+        }
+
+        .stats-row-wrapper {
+            padding: 24px 24px 0 24px;
+        }
+
+        .profile-details-wrapper {
+            padding: 20px 24px 24px 24px;
+        }
+
+        .products-section, .reviews-section {
+            padding: 24px;
+        }
+
+        .product-mini-card {
+            flex-direction: column;
+            gap: 12px;
+            text-align: center;
+        }
+
+        .product-mini-meta {
+            justify-content: center;
+        }
+
+        .product-mini-actions {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .section-header {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .detail-item {
+            flex-direction: column;
+            text-align: center;
+            gap: 4px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .profile-icon-large {
+            font-size: 3rem;
+        }
+
+        .hero h1 {
+            font-size: 1.5rem;
+        }
+
+        .hero-bio {
+            font-size: 0.85rem;
+        }
+
+        .stats-row {
+            gap: 12px;
+        }
+
+        .stat-number-small {
+            font-size: 1rem;
+        }
+
+        .stat-label-small {
+            font-size: 0.7rem;
+        }
+    }
+</style>
+{% endblock %}

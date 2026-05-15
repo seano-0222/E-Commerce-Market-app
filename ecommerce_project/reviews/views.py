@@ -4,7 +4,6 @@ from django.contrib import messages
 from products.models import Product
 from .models import Review
 
-
 @login_required
 def product_reviews(request, product_id):
     product = get_object_or_404(Product, pk=product_id)
@@ -18,7 +17,6 @@ def product_reviews(request, product_id):
         'reviews': reviews,
         'user_review': user_review
     })
-
 
 @login_required
 def add_review(request, product_id):

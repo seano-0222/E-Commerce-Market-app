@@ -1,17 +1,14 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<!-- Hero Section for Categories Page -->
+<!-- Hero Section for Categories -->
 <section class="hero">
-    <h1>📂 <span>Categories</span></h1>
-    <p>Browse our product collections by category and find exactly what you're looking for.</p>
-
-    <!-- Small Stats Indicators -->
-    <div class="stats-indicators">
-        <div class="stat-indicator">
-            <span class="stat-indicator-number">{{ categories.count }}</span>
-            <span class="stat-indicator-label">Total Categories</span>
+    <div class="hero-content">
+        <div class="categories-icon-large">
+            📂
         </div>
+        <h1>Product <span>Categories</span></h1>
+        <p>Browse our product collections by category</p>
     </div>
 </section>
 
@@ -19,8 +16,17 @@
 <div class="categories-section">
     <div class="categories-container">
         <div class="categories-header">
-            <h2>All Categories</h2>
-            <p>Explore our wide range of product categories</p>
+            <div class="header-left">
+                <h2>All Categories</h2>
+                <p>Explore our wide range of product categories</p>
+            </div>
+            {% if user.is_superuser %}
+            <div class="header-right">
+                <a href="{% url 'categories:add_category' %}" class="btn-add-category">
+                    + Add New Category
+                </a>
+            </div>
+            {% endif %}
         </div>
 
         <div class="categories-grid">
@@ -42,19 +48,27 @@
                         <h3 class="category-card-name">{{ category.name }}</h3>
                         <p class="category-card-desc">{{ category.description|default:"No description available"|truncatewords:15 }}</p>
                         <div class="category-card-stats">
-                            <span class="product-count">📦 {{ category.products.count }} product{{ category.products.count|pluralize }}</span>
+                            <span class="product-count">📦 {{ category.product_count }} product{{ category.product_count|pluralize }}</span>
                         </div>
                         <div class="category-card-actions">
                             <a href="{% url 'categories:category_detail' category.category_id %}" class="btn-secondary-small">View Details</a>
                             <a href="{% url 'products:products_by_category' category.category_id %}" class="btn-primary-small">Browse Products →</a>
                         </div>
+                        {% if user.is_superuser %}
+                        <div class="category-admin-actions">
+                            <a href="{% url 'categories:update_category' category.category_id %}" class="btn-edit-category">✏️ Edit</a>
+                            <a href="{% url 'categories:delete_category' category.category_id %}" class="btn-delete-category">🗑️ Delete</a>
+                        </div>
+                        {% endif %}
                     </div>
                 </div>
             {% empty %}
                 <div class="empty-state">
                     <span class="empty-icon">📂</span>
-                    <p>No categories available. Please add some categories.</p>
-                    <a href="{% url 'categories:add_category' %}" class="btn-primary-action" style="margin-top: 20px; display: inline-block;">+ Add Category →</a>
+                    <p>No categories available.</p>
+                    {% if user.is_superuser %}
+                        <a href="{% url 'categories:add_category' %}" class="btn-primary-action" style="margin-top: 20px; display: inline-block;">+ Add Category →</a>
+                    {% endif %}
                 </div>
             {% endfor %}
         </div>
@@ -62,34 +76,44 @@
 </div>
 
 <style>
-    /* Force dark background on all elements */
+    /* Force dark background */
     html, body {
-        background: #0f0f1a !important;
-        margin: 0;
-        padding: 0;
-    }
-
-    /* Override any white backgrounds from base template */
-    body, .container, .main, main, .content, [class*="container"], [class*="wrapper"], [class*="content"] {
         background: #0f0f1a !important;
     }
 
     /* Hero Section */
     .hero {
         background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 60%, #0f3460 100%);
-        color: #fff;
         padding: 60px 40px;
         text-align: center;
         border-bottom: 1px solid rgba(255,255,255,0.05);
-        position: relative;
-        z-index: 1;
+    }
+
+    .hero-content {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .categories-icon-large {
+        font-size: 4rem;
+        margin-bottom: 20px;
+        display: inline-block;
+        animation: bounce 2s infinite;
+    }
+
+    @keyframes bounce {
+        0%, 100% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(-10px);
+        }
     }
 
     .hero h1 {
-        font-size: 3rem;
+        font-size: 2.5rem;
         font-weight: 800;
         margin-bottom: 16px;
-        line-height: 1.15;
         color: #fff;
     }
 
@@ -100,41 +124,6 @@
     .hero p {
         font-size: 1rem;
         color: #9ca3af;
-        max-width: 560px;
-        margin: 0 auto 24px;
-    }
-
-    /* Stats Indicators */
-    .stats-indicators {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 12px;
-        margin: 24px auto 0;
-        padding: 10px 24px;
-        background: rgba(255, 255, 255, 0.08);
-        border-radius: 50px;
-        display: inline-flex;
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255,255,255,0.1);
-    }
-
-    .stat-indicator {
-        display: flex;
-        align-items: baseline;
-        gap: 6px;
-    }
-
-    .stat-indicator-number {
-        font-size: 1.3rem;
-        font-weight: 800;
-        color: #4f8ef7;
-    }
-
-    .stat-indicator-label {
-        font-size: 0.85rem;
-        color: #d1d5db;
-        font-weight: 500;
     }
 
     /* Categories Section */
@@ -142,8 +131,6 @@
         max-width: 1200px;
         margin: 40px auto;
         padding: 0 20px;
-        position: relative;
-        z-index: 1;
     }
 
     .categories-container {
@@ -157,20 +144,43 @@
     .categories-header {
         background: #0f0f1a;
         padding: 32px;
-        text-align: center;
         border-bottom: 1px solid rgba(255,255,255,0.08);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 20px;
     }
 
-    .categories-header h2 {
+    .header-left h2 {
         color: #fff;
-        font-size: 1.8rem;
+        font-size: 1.5rem;
         font-weight: 700;
         margin-bottom: 8px;
     }
 
-    .categories-header p {
+    .header-left p {
         color: #9ca3af;
         font-size: 0.9rem;
+    }
+
+    .btn-add-category {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 20px;
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: #fff;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        transition: all 0.2s;
+    }
+
+    .btn-add-category:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
     }
 
     /* Categories Grid */
@@ -215,7 +225,7 @@
 
     .category-card-name {
         color: #fff;
-        font-size: 1.3rem;
+        font-size: 1.2rem;
         font-weight: 700;
         margin-bottom: 12px;
     }
@@ -238,7 +248,7 @@
         background: rgba(79, 142, 247, 0.1);
         color: #4f8ef7;
         border-radius: 20px;
-        font-size: 0.8rem;
+        font-size: 0.75rem;
         font-weight: 600;
         border: 1px solid rgba(79, 142, 247, 0.2);
     }
@@ -246,7 +256,7 @@
     .category-card-actions {
         display: flex;
         gap: 12px;
-        margin-top: auto;
+        margin-bottom: 12px;
     }
 
     .btn-primary-small {
@@ -261,7 +271,7 @@
         text-decoration: none;
         border-radius: 8px;
         font-weight: 600;
-        font-size: 0.85rem;
+        font-size: 0.8rem;
         transition: all 0.2s;
         text-align: center;
     }
@@ -283,7 +293,7 @@
         text-decoration: none;
         border-radius: 8px;
         font-weight: 600;
-        font-size: 0.85rem;
+        font-size: 0.8rem;
         transition: all 0.2s;
         border: 1px solid rgba(79, 142, 247, 0.3);
         text-align: center;
@@ -294,32 +304,57 @@
         transform: translateY(-2px);
     }
 
-    /* Action Buttons Footer */
-    .action-buttons-footer {
-        text-align: center;
-        padding: 24px 32px 32px;
+    /* Admin Actions */
+    .category-admin-actions {
+        display: flex;
+        gap: 12px;
+        margin-top: 8px;
+        padding-top: 12px;
         border-top: 1px solid rgba(255,255,255,0.08);
-        background: #1a1a2e;
     }
 
-    .btn-admin-action {
+    .btn-edit-category {
+        flex: 1;
         display: inline-flex;
         align-items: center;
-        gap: 8px;
-        padding: 12px 28px;
-        background: linear-gradient(135deg, #10b981, #059669);
-        color: #fff;
+        justify-content: center;
+        gap: 6px;
+        padding: 8px 12px;
+        background: rgba(251, 191, 36, 0.15);
+        color: #fbbf24;
         text-decoration: none;
-        border-radius: 40px;
-        font-weight: 700;
-        font-size: 0.9rem;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 0.75rem;
         transition: all 0.2s;
-        box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+        border: 1px solid rgba(251, 191, 36, 0.2);
     }
 
-    .btn-admin-action:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 16px rgba(16, 185, 129, 0.4);
+    .btn-edit-category:hover {
+        background: rgba(251, 191, 36, 0.25);
+        transform: translateY(-1px);
+    }
+
+    .btn-delete-category {
+        flex: 1;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 8px 12px;
+        background: rgba(239, 68, 68, 0.15);
+        color: #ef4444;
+        text-decoration: none;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 0.75rem;
+        transition: all 0.2s;
+        border: 1px solid rgba(239, 68, 68, 0.2);
+    }
+
+    .btn-delete-category:hover {
+        background: rgba(239, 68, 68, 0.25);
+        transform: translateY(-1px);
     }
 
     /* Empty State */
@@ -356,7 +391,6 @@
         font-weight: 700;
         font-size: 0.9rem;
         transition: all 0.2s;
-        box-shadow: 0 2px 8px rgba(79, 142, 247, 0.3);
     }
 
     .btn-primary-action:hover {
@@ -374,25 +408,26 @@
             font-size: 2rem;
         }
 
-        .categories-grid {
-            grid-template-columns: 1fr;
-            padding: 20px;
+        .categories-icon-large {
+            font-size: 3rem;
         }
 
         .categories-header {
-            padding: 24px;
+            flex-direction: column;
+            text-align: center;
         }
 
-        .categories-header h2 {
-            font-size: 1.4rem;
+        .categories-grid {
+            grid-template-columns: 1fr;
+            padding: 20px;
         }
 
         .category-card-actions {
             flex-direction: column;
         }
 
-        .stats-indicators {
-            scale: 0.9;
+        .category-admin-actions {
+            flex-direction: column;
         }
     }
 
@@ -402,7 +437,7 @@
         }
 
         .category-card-name {
-            font-size: 1.1rem;
+            font-size: 1rem;
         }
     }
 </style>

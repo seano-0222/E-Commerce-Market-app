@@ -46,7 +46,7 @@
                     <h3>Share Your Experience</h3>
                     <p>Have you tried this product? Let others know what you think!</p>
                     <a href="{% url 'reviews:add_review' product.product_id %}" class="btn-write-review">
-                        Write a Review
+                        Write a Review →
                     </a>
                 </div>
             </div>
@@ -55,7 +55,7 @@
         <!-- All Reviews Section -->
         <div class="all-reviews-section">
             <div class="all-reviews-header">
-                <h2>All Reviews</h2>
+                <h2>Customer Reviews</h2>
                 <p>What other customers are saying</p>
             </div>
 
@@ -106,27 +106,17 @@
 </div>
 
 <style>
-    /* Force dark background on all elements */
+    /* Force dark background */
     html, body {
-        background: #0f0f1a !important;
-        margin: 0;
-        padding: 0;
-    }
-
-    /* Override any white backgrounds from base template */
-    body, .container, .main, main, .content, [class*="container"], [class*="wrapper"], [class*="content"] {
         background: #0f0f1a !important;
     }
 
     /* Hero Section */
     .hero {
         background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 60%, #0f3460 100%);
-        color: #fff;
         padding: 60px 40px;
         text-align: center;
         border-bottom: 1px solid rgba(255,255,255,0.05);
-        position: relative;
-        z-index: 1;
     }
 
     .hero-content {
@@ -154,12 +144,11 @@
         font-size: 2.5rem;
         font-weight: 800;
         margin-bottom: 16px;
-        line-height: 1.15;
         color: #fff;
     }
 
     .hero h1 span {
-        color: #4f8ef7;
+        color: #fbbf24;
     }
 
     .hero p {
@@ -169,11 +158,9 @@
 
     /* Reviews Section */
     .reviews-section {
-        max-width: 1000px;
+        max-width: 900px;
         margin: 40px auto;
         padding: 0 20px;
-        position: relative;
-        z-index: 1;
     }
 
     .reviews-container {
@@ -187,7 +174,7 @@
     /* User Review Card */
     .user-review-card {
         background: linear-gradient(135deg, #0f0f1a, #1a1a2e);
-        border-bottom: 2px solid #4f8ef7;
+        border-bottom: 3px solid #fbbf24;
         padding: 32px;
         margin: 0;
     }
@@ -204,8 +191,8 @@
     }
 
     .user-review-header h3 {
-        color: #4f8ef7;
-        font-size: 1.5rem;
+        color: #fbbf24;
+        font-size: 1.3rem;
         font-weight: 700;
         margin: 0;
     }
@@ -228,20 +215,20 @@
 
     .review-comment p {
         color: #d1d5db;
-        font-size: 1rem;
+        font-size: 0.95rem;
         line-height: 1.6;
         margin: 0;
     }
 
     .review-date {
         color: #6b7280;
-        font-size: 0.85rem;
+        font-size: 0.8rem;
     }
 
     /* Write Review Prompt */
     .write-review-prompt {
         background: linear-gradient(135deg, #0f0f1a, #1a1a2e);
-        border-bottom: 2px solid #10b981;
+        border-bottom: 3px solid #10b981;
         padding: 48px 32px;
         text-align: center;
     }
@@ -259,7 +246,7 @@
 
     .prompt-content h3 {
         color: #fff;
-        font-size: 1.5rem;
+        font-size: 1.3rem;
         font-weight: 700;
         margin-bottom: 12px;
     }
@@ -279,7 +266,7 @@
         text-decoration: none;
         border-radius: 40px;
         font-weight: 700;
-        font-size: 0.95rem;
+        font-size: 0.9rem;
         transition: all 0.2s;
         box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
     }
@@ -301,7 +288,7 @@
 
     .all-reviews-header h2 {
         color: #fff;
-        font-size: 1.8rem;
+        font-size: 1.5rem;
         font-weight: 700;
         margin-bottom: 8px;
     }
@@ -315,7 +302,7 @@
     .reviews-list {
         display: flex;
         flex-direction: column;
-        gap: 20px;
+        gap: 16px;
     }
 
     .review-card {
@@ -327,7 +314,7 @@
     }
 
     .review-card:hover {
-        border-color: rgba(79, 142, 247, 0.3);
+        border-color: rgba(251, 191, 36, 0.3);
         transform: translateX(4px);
     }
 
@@ -352,7 +339,8 @@
 
     .reviewer-name {
         color: #fff;
-        font-size: 1rem;
+        font-size: 0.95rem;
+        font-weight: 600;
     }
 
     .review-rating {
@@ -362,7 +350,7 @@
     }
 
     .star {
-        font-size: 1.1rem;
+        font-size: 1rem;
         color: #4b5563;
     }
 
@@ -372,13 +360,13 @@
 
     .rating-number {
         color: #9ca3af;
-        font-size: 0.85rem;
+        font-size: 0.8rem;
         margin-left: 6px;
     }
 
     .review-content {
         color: #d1d5db;
-        font-size: 0.95rem;
+        font-size: 0.9rem;
         line-height: 1.6;
         margin-bottom: 12px;
     }
@@ -416,13 +404,13 @@
         display: inline-flex;
         align-items: center;
         gap: 8px;
-        padding: 12px 28px;
+        padding: 10px 24px;
         background: rgba(79, 142, 247, 0.1);
         color: #4f8ef7;
         text-decoration: none;
         border-radius: 40px;
         font-weight: 600;
-        font-size: 0.9rem;
+        font-size: 0.85rem;
         transition: all 0.2s;
         border: 1px solid rgba(79, 142, 247, 0.3);
     }
@@ -442,6 +430,10 @@
             font-size: 1.8rem;
         }
 
+        .reviews-icon-large {
+            font-size: 3rem;
+        }
+
         .user-review-card,
         .write-review-prompt,
         .all-reviews-section {
@@ -449,11 +441,11 @@
         }
 
         .user-review-header h3 {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
         }
 
         .all-reviews-header h2 {
-            font-size: 1.4rem;
+            font-size: 1.3rem;
         }
 
         .review-header {
@@ -466,7 +458,7 @@
         }
 
         .review-comment p {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
     }
 
@@ -476,19 +468,19 @@
         }
 
         .reviews-icon-large {
-            font-size: 3rem;
+            font-size: 2.5rem;
         }
 
         .prompt-content h3 {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
         }
 
         .reviewer-name {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
 
         .review-content p {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
         }
     }
 </style>
