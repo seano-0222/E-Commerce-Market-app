@@ -13,6 +13,7 @@ the data ever reaches the database.
 
 from django import forms
 from django.core.exceptions import ValidationError
+from django.contrib.auth.models import User
 
 from .models import Person, Customer, Vendor
 
@@ -29,19 +30,54 @@ class PersonForm(forms.ModelForm):
     Customer or Vendor (the other two forms select an existing Person).
     """
 
+    username = forms.CharField(
+        max_length=150,
+        label='Username',
+    )
+    password = forms.CharField(
+        widget=forms.PasswordInput,
+        label='Password',
+    )
+    password2 = forms.CharField(
+        widget=forms.PasswordInput,
+        label='Confirm Password',
+    )
+
     class Meta:
-        model  = Person
+        model = Person
         fields = ['first_name', 'last_name', 'email', 'address']
         widgets = {
-            # Use a Textarea with fewer rows for address
             'address': forms.Textarea(attrs={'rows': 3}),
         }
-        labels = {
-            'first_name': 'First Name',
-            'last_name':  'Last Name',
-            'email':      'Email Address',
-            'address':    'Address',
-        }
+
+    def clean_username(self):
+        username = self.cleaned_data.get('username')
+        if User.objects.filter(username=username).exists():
+            raise ValidationError("That username is already taken.")
+        return username
+
+    def clean(self):
+        cleaned_data = super().clean()
+        p1 = cleaned_data.get('password')
+        p2 = cleaned_data.get('password2')
+        if p1 and p2 and p1 != p2:
+            raise ValidationError("Passwords do not match.")
+        return cleaned_data
+
+    def save(self, commit=True):
+        user = User.objects.create_user(
+            username=self.cleaned_data['username'],
+            password=self.cleaned_data['password'],
+            email=self.cleaned_data['email'],
+            first_name=self.cleaned_data['first_name'],
+            last_name=self.cleaned_data['last_name'],
+        )
+
+        person = super().save(commit=False)
+        person.user = user
+        if commit:
+            person.save()
+        return person
 
 
 # ---------------------------------------------------------------------------

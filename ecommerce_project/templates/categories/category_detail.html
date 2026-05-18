@@ -1,23 +1,460 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>{{ category.name }}</h1>
-<p>{{ category.description }}</p>
-
-<h2>Products in this Category</h2>
-<div class="product-grid">
-    {% for product in category.products.all %}
-        <div class="product-card">
-            <h3>{{ product.name }}</h3>
-            <p>{{ product.description|truncatewords:20 }}</p>
-            <p class="price">${{ product.price }}</p>
-            <p class="stock">Stock: {{ product.stock_qty }}</p>
-            <a href="{% url 'products:product_detail' product.product_id %}" class="btn">View Details</a>
+<!-- Hero Section for Category Detail -->
+<section class="hero">
+    <div class="hero-content">
+        <div class="category-icon-large">
+            {% if category.name == "Electronics" %}📱
+            {% elif category.name == "Clothing" %}👕
+            {% elif category.name == "Books" %}📚
+            {% elif category.name == "Home" %}🏠
+            {% elif category.name == "Toys" %}🎮
+            {% elif category.name == "Sports" %}⚽
+            {% elif category.name == "Beauty" %}💄
+            {% elif category.name == "Food" %}🍕
+            {% else %}🏷️
+            {% endif %}
         </div>
-    {% empty %}
-        <p>No products in this category.</p>
-    {% endfor %}
+        <h1><span>{{ category.name }}</span></h1>
+        <p class="category-description">{{ category.description|default:"No description available" }}</p>
+
+        <!-- Small Stats Indicator -->
+        <div class="stats-indicators">
+            <div class="stat-indicator">
+                <span class="stat-indicator-number">{{ category.products.count }}</span>
+                <span class="stat-indicator-label">Products</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Products Section -->
+<div class="products-section">
+    <div class="products-container">
+        <div class="products-header">
+            <h2>Products in {{ category.name }}</h2>
+            <p>Browse all items available in this category</p>
+        </div>
+
+        <div class="product-grid">
+            {% for product in category.products.all %}
+                <div class="product-card">
+                    {% if product.image %}
+                        <div class="product-image">
+                            <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                        </div>
+                    {% else %}
+                        <div class="product-image placeholder">
+                            <span>🛍️</span>
+                        </div>
+                    {% endif %}
+                    <div class="product-info">
+                        <h3 class="product-name">{{ product.name }}</h3>
+                        <p class="product-desc">{{ product.description|truncatewords:15 }}</p>
+                        <div class="product-meta">
+                            <span class="product-price">${{ product.price }}</span>
+                            <span class="product-stock {% if product.stock_qty <= 0 %}out-of-stock{% else %}in-stock{% endif %}">
+                                {% if product.stock_qty > 0 %}Stock: {{ product.stock_qty }}{% else %}Out of Stock{% endif %}
+                            </span>
+                        </div>
+                        <a href="{% url 'products:product_detail' product.product_id %}" class="product-btn">View Details &rarr;</a>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="empty-state">
+                    <span class="empty-icon">📭</span>
+                    <p>No products available in this category.</p>
+                    <a href="{% url 'categories:category_list' %}" class="btn-primary-action" style="margin-top: 20px; display: inline-block;">Browse Other Categories →</a>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Back Button -->
+        <div class="back-action-footer">
+            <a href="{% url 'categories:category_list' %}" class="btn-back">
+                ← Back to All Categories
+            </a>
+        </div>
+    </div>
 </div>
 
-<a href="{% url 'categories:category_list' %}" class="btn">Back to Categories</a>
+<style>
+    /* Force dark background on all elements */
+    html, body {
+        background: #0f0f1a !important;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Override any white backgrounds from base template */
+    body, .container, .main, main, .content, [class*="container"], [class*="wrapper"], [class*="content"] {
+        background: #0f0f1a !important;
+    }
+
+    /* Hero Section */
+    .hero {
+        background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 60%, #0f3460 100%);
+        color: #fff;
+        padding: 60px 40px;
+        text-align: center;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+        position: relative;
+        z-index: 1;
+    }
+
+    .hero-content {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .category-icon-large {
+        font-size: 4rem;
+        margin-bottom: 20px;
+        display: inline-block;
+        animation: bounce 2s infinite;
+    }
+
+    @keyframes bounce {
+        0%, 100% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(-10px);
+        }
+    }
+
+    .hero h1 {
+        font-size: 3rem;
+        font-weight: 800;
+        margin-bottom: 16px;
+        line-height: 1.15;
+        color: #fff;
+    }
+
+    .hero h1 span {
+        color: #4f8ef7;
+    }
+
+    .category-description {
+        font-size: 1.1rem;
+        color: #9ca3af;
+        max-width: 600px;
+        margin: 0 auto 24px;
+        line-height: 1.6;
+    }
+
+    /* Stats Indicators */
+    .stats-indicators {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 12px;
+        margin: 24px auto 0;
+        padding: 10px 24px;
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 50px;
+        display: inline-flex;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .stat-indicator {
+        display: flex;
+        align-items: baseline;
+        gap: 6px;
+    }
+
+    .stat-indicator-number {
+        font-size: 1.3rem;
+        font-weight: 800;
+        color: #4f8ef7;
+    }
+
+    .stat-indicator-label {
+        font-size: 0.85rem;
+        color: #d1d5db;
+        font-weight: 500;
+    }
+
+    /* Products Section */
+    .products-section {
+        max-width: 1200px;
+        margin: 40px auto;
+        padding: 0 20px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .products-container {
+        background: #1a1a2e;
+        border-radius: 20px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        overflow: hidden;
+        border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .products-header {
+        background: #0f0f1a;
+        padding: 32px;
+        text-align: center;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .products-header h2 {
+        color: #fff;
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .products-header p {
+        color: #9ca3af;
+        font-size: 0.9rem;
+    }
+
+    /* Product Grid */
+    .product-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 24px;
+        padding: 32px;
+        background: #1a1a2e;
+    }
+
+    .product-card {
+        background: #0f0f1a;
+        border-radius: 16px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(255,255,255,0.08);
+        display: flex;
+        flex-direction: column;
+    }
+
+    .product-card:hover {
+        transform: translateY(-4px);
+        border-color: rgba(79, 142, 247, 0.3);
+        box-shadow: 0 12px 28px rgba(0,0,0,0.3);
+    }
+
+    .product-image {
+        height: 200px;
+        background: #0a0a0f;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
+
+    .product-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .product-image.placeholder {
+        font-size: 3rem;
+        background: linear-gradient(135deg, #1a1a2e, #0f0f1a);
+    }
+
+    .product-info {
+        padding: 20px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        background: #0f0f1a;
+    }
+
+    .product-name {
+        color: #fff;
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+        line-height: 1.4;
+    }
+
+    .product-desc {
+        color: #9ca3af;
+        font-size: 0.85rem;
+        line-height: 1.5;
+        margin-bottom: 15px;
+        flex: 1;
+    }
+
+    .product-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        margin-bottom: 16px;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .product-price {
+        font-size: 1.3rem;
+        font-weight: 800;
+        color: #4f8ef7;
+    }
+
+    .product-stock {
+        font-size: 0.75rem;
+        font-weight: 600;
+        padding: 4px 10px;
+        border-radius: 20px;
+    }
+
+    .product-stock.in-stock {
+        background: rgba(16, 185, 129, 0.2);
+        color: #10b981;
+        border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .product-stock.out-of-stock {
+        background: rgba(239, 68, 68, 0.2);
+        color: #ef4444;
+        border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .product-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 10px 16px;
+        background: linear-gradient(135deg, #4f8ef7, #8b5cf6);
+        color: #fff;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        transition: all 0.2s;
+        text-align: center;
+    }
+
+    .product-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(79, 142, 247, 0.3);
+    }
+
+    /* Back Button Footer */
+    .back-action-footer {
+        text-align: center;
+        padding: 24px 32px 32px;
+        border-top: 1px solid rgba(255,255,255,0.08);
+        background: #1a1a2e;
+    }
+
+    .btn-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 28px;
+        background: rgba(79, 142, 247, 0.1);
+        color: #4f8ef7;
+        text-decoration: none;
+        border-radius: 40px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: all 0.2s;
+        border: 1px solid rgba(79, 142, 247, 0.3);
+    }
+
+    .btn-back:hover {
+        background: rgba(79, 142, 247, 0.2);
+        transform: translateX(-4px);
+    }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 80px 40px;
+        background: #0f0f1a;
+        border-radius: 20px;
+        color: #9ca3af;
+        grid-column: 1 / -1;
+    }
+
+    .empty-icon {
+        font-size: 4rem;
+        display: block;
+        margin-bottom: 20px;
+        opacity: 0.5;
+    }
+
+    .empty-state p {
+        font-size: 1rem;
+        margin-bottom: 10px;
+    }
+
+    .btn-primary-action {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 28px;
+        background: linear-gradient(135deg, #4f8ef7, #8b5cf6);
+        color: #fff;
+        text-decoration: none;
+        border-radius: 40px;
+        font-weight: 700;
+        font-size: 0.9rem;
+        transition: all 0.2s;
+        box-shadow: 0 2px 8px rgba(79, 142, 247, 0.3);
+    }
+
+    .btn-primary-action:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 16px rgba(79, 142, 247, 0.4);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .hero {
+            padding: 40px 20px;
+        }
+
+        .hero h1 {
+            font-size: 2rem;
+        }
+
+        .category-description {
+            font-size: 0.95rem;
+        }
+
+        .product-grid {
+            grid-template-columns: 1fr;
+            padding: 20px;
+        }
+
+        .products-header {
+            padding: 24px;
+        }
+
+        .products-header h2 {
+            font-size: 1.4rem;
+        }
+
+        .stats-indicators {
+            scale: 0.9;
+        }
+
+        .category-icon-large {
+            font-size: 3rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .hero h1 {
+            font-size: 1.5rem;
+        }
+
+        .product-name {
+            font-size: 1rem;
+        }
+
+        .product-price {
+            font-size: 1.1rem;
+        }
+    }
+</style>
 {% endblock %}

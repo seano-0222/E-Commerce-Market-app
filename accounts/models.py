@@ -17,12 +17,14 @@ Business Rules:
 
 from django.db import models
 from django.core.exceptions import ValidationError
+from django.contrib.auth.models import User
 
 
 # ---------------------------------------------------------------------------
 # Supertype: Person
 # ---------------------------------------------------------------------------
 class Person(models.Model):
+<<<<<<< HEAD
     """
     Supertype that holds common identity information for every user
     in the system (both customers and vendors).
@@ -38,6 +40,19 @@ class Person(models.Model):
     # unique=True enforces business rule: no duplicate emails
     email = models.EmailField(unique=True)
     address = models.TextField()
+=======
+    user       = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        null=True, blank=True,
+        related_name='person'
+    )
+    person_id  = models.AutoField(primary_key=True)
+    first_name = models.CharField(max_length=100)
+    last_name  = models.CharField(max_length=100)
+    email      = models.EmailField(unique=True)
+    address    = models.TextField()
+>>>>>>> 827cfe0f4065836dd040e1de6a34ee991ea04f14
     created_at = models.DateTimeField(auto_now_add=True)
 
     # ------------------------------------------------------------------

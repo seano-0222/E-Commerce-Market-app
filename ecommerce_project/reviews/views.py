@@ -4,7 +4,6 @@ from django.contrib import messages
 from products.models import Product
 from .models import Review
 
-
 @login_required
 def product_reviews(request, product_id):
     product = get_object_or_404(Product, pk=product_id)
@@ -19,7 +18,6 @@ def product_reviews(request, product_id):
         'user_review': user_review
     })
 
-
 @login_required
 def add_review(request, product_id):
     product = get_object_or_404(Product, pk=product_id)
@@ -28,22 +26,18 @@ def add_review(request, product_id):
         rating = int(request.POST.get('rating'))
         comment = request.POST.get('comment')
 
-        # Check if user already reviewed
         if Review.objects.filter(customer=request.user, product=product).exists():
             messages.error(request, 'You have already reviewed this product.')
-            return redirect('product_reviews', product_id=product_id)
+            return redirect('reviews:product_reviews', product_id=product_id)
 
-        try:
-            review = Review.objects.create(
-                rating=rating,
-                comment=comment,
-                customer=request.user,
-                product=product
-            )
-            messages.success(request, 'Your review has been posted!')
-        except Exception as e:
-            messages.error(request, f'Error posting review: {str(e)}')
+        Review.objects.create(
+            rating=rating,
+            comment=comment,
+            customer=request.user,
+            product=product
+        )
 
-        return redirect('product_reviews', product_id=product_id)
+        messages.success(request, 'Your review has been posted!')
+        return redirect('reviews:product_reviews', product_id=product_id)
 
     return render(request, 'reviews/add_review.html', {'product': product})
